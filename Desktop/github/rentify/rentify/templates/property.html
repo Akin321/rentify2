@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+
+        property
+{% endblock %}
+{% block content %}
+
+<div class="row">
+    <div class="col-12 col-sm-12 col-md-12 col-lg-6 text-center">
+        <div style="min-width:18rem">
+            <img src="{{property.img.url}}" alt="property image" width="488" height="488">
+        </div>
+    </div>
+
+
+    <div class="col-12 col-sm-12 col-md-12 col-lg-6">
+        <div>
+            <h1 class="my_prod_title" style="text-transform:uppercase;">{{property.place}}</h1>
+            <p><b>Area</b>: {{property.area}}</p>
+            <p><b>Bedrooms</b>: {{property.bedrooms}}</p>
+            <p><b>Bathrooms</b>: {{property.bathrooms}}</p>
+            <p><b>Hospitals Nearby</b>: {{property.hospitals}}</p>
+            <p><b>Colleges Nearby</b>: {{property.colleges}}</p>
+            <p><b style="color:red;"><u>Seller Details</u></b> </p>
+            <p><b>Seller Name</b>:{{property.added_by}}</p>
+            <p><b>email</b>:{{property.added_by.email}}</p>
+
+
+</div>
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,54 @@
+      body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .container {
+            flex: 1;
+            /* Add additional styling for your main content */
+        }
+
+.my_footer{
+    background-color:#dee2e6;
+    height:60px;
+}
+
+.my_footer p{
+    padding-top:20px;
+    font-size:14px;
+}
+.card-title{
+font-size:26px;
+text-transform:uppercase;
+letter-spacing:.2em
+}
+
+.navbar{
+margin-bottom:20px;
+}
+
+.my_title{
+font-size:26px;
+text-transform:uppercase;
+letter-spacing:.2em
+}
+.card-container {
+  display: flex;
+}
+
+.card {
+  flex: 1; /* This makes all cards in the container equal width */
+  height: 100%; /* This ensures all cards have the same height */
+  border: 1px solid #000; /* Example border style */
+  margin: 0 10px; /* Adjust margins as needed */
+}
+
+.my-image{
+width:100%;
+}
+.my_bottommargin{
+margin-bottom:20px;
+}

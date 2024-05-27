@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html>
+<!-- Created By CodingLab - www.codinglabweb.com -->
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>Login Form | CodingLab</title>
+    <link rel="stylesheet" href="{% static 'css/custom2.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"/>
+  </head>
+  <body>
+ <div style="position:absolute;top:30px;right:30px;">
+    <a class="btn btn-primary" href="{% url 'login:seller' %}">Login as Seller</a>
+    <a class="btn btn-primary" href="{% url 'login:login' %}">Login as Buyer</a>
+  </div>
+
+
+    <div class="container">
+      <div class="wrapper">
+        {% if user_type == 'Seller' %}
+        <div class="title"><span>Seller Login</span></div>
+        {% else %}
+        <div class="title"><span>Buyer Login</span></div>
+        {% endif %}
+        <form action="" method="post">
+          {% csrf_token %}
+          <div class="row">
+            <i class="fas fa-user"></i>
+            <input type="text" placeholder="username" name="username" required>
+          </div>
+          <div class="row">
+            <i class="fas fa-lock"></i>
+            <input type="password" placeholder="Password" name="Password" required>
+          </div>
+          <div class="row button">
+            <input type="submit" value="Login">
+          </div>
+          <div class="signup-link">Not a member? <a href="{% url 'login:register' %}">Signup now</a></div>
+        </form>
+      </div>
+          {% for msg in messages %}
+  <P class="text-center" style="color:red;font-size:20px;">{{msg}}!!</p>
+  {% endfor %}
+    </div>
+  <script src="{% static 'js/popper.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+  </body>
+</html>

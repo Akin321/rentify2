@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<form action="" method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  <div class="mb-3">
+    <label for="exampleInputEmail1" class="form-label">Place</label>
+    <input type="text" class="form-control" name="place" id="exampleInputEmail1">
+  </div>
+  <div class="mb-3">
+    <label for="exampleInputPassword1" class="form-label">Area</label>
+    <input type="text" class="form-control" name="area" id="exampleInputPassword1">
+  </div>
+  <div class="mb-3">
+    <label for="ex" class="form-label">Bedrooms</label>
+    <input type="number" class="form-control"  name="bedrooms" id="ex">
+  </div>
+ <div class="mb-3">
+    <label for="ex" class="form-label">Bathrooms</label>
+    <input type="number" class="form-control"  name="bathrooms" id="ex">
+  </div>
+
+  <div class="mb-3">
+    <label for="exa" class="form-label">Image</label>
+    <input type="file" class="form-control"  name="img" id="exa">
+  </div>
+<div class="mb-3">
+    <label for="exa2" class="form-label">Hospitals</label>
+    <input type="number" class="form-control"  name="hospitals" id="exa2">
+  </div>
+    <div class="mb-3">
+    <label for="exa3" class="form-label">Colleges</label>
+    <input type="number" class="form-control"  name="colleges" id="exa3">
+  </div>
+
+  <button style="width:100%" type="submit" class="btn btn-primary">Submit</button>
+</form>
+{% endblock %}

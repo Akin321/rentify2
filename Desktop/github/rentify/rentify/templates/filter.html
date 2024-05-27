@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="row">
+{% if properties %}
+    {% for property in properties %}
+        <div class="my_bottommargin card-container col-sm-12  col-md-4 col-lg-4">
+        <div class="card text-center" style="min-width: 18rem;">
+            <a href="#"><img class="card-img-top my-image" height="300px" src="{{property.img.url}}" alt="property image"></a>
+         <div class="card-body">
+            <h5 class="card-title">{{property.place}}</h5>
+             <ul class="list-group list-group-flush">
+    <li class="list-group-item">{{property.area}}</li>
+    <li class="list-group-item">Bedrooms:{{property.bedrooms}}</li>
+    <li class="list-group-item">Bathrooms:{{property.bathrooms}}</li>
+                 <li class="list-group-item">Hospitals Nearby:{{property.hospitals}}</li>
+                 <li class="list-group-item">Colleges Nearby:{{property.colleges}}</li>
+  </ul>
+              <a href="{% url 'rent:property' id=property.id %}" class="btn btn-success">click me</a>
+            </div>
+        </div>
+        </div>
+    {% endfor %}
+
+{% else %}
+<p style="color:red;font-size:20px" class="text-center">no properties available!!</p>
+{% endif %}
+</div>
+
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+property
+{% endblock %}
+{% block content %}
+<h1 class="text-center my_title">Rentify</h1>
+        <div>
+             <img class="my_image my_image_padding" src="{% static 'img/rentbanner.jpg' %}" alt="banner" width="100%">
+        </div>
+            <br>
+        <div>
+            <p class="text-justify">Welcome to Rentify, your ultimate destination for all your rent details! Whether you're a tenant searching
+                for the perfect property or a landlord managing rentals, our platform provides comprehensive information to simplify your renting
+                experience. From property listings and rental rates to tips on navigating the rental market, we've got you covered. Stay informed, make informed decisions, and streamline your renting process with Rentify.</p>
+
+        </div>
+<div class="row">
+
+    {% for property in properties %}
+        <div class="my_bottommargin card-container col-sm-12  col-md-4 col-lg-4">
+        <div class="card text-center" style="min-width: 18rem;">
+            <a href="#"><img class="card-img-top my-image" height="300px" src="{{property.img.url}}" alt="property image"></a>
+         <div class="card-body">
+            <h5 class="card-title">{{property.place}}</h5>
+             <ul class="list-group list-group-flush">
+    <li class="list-group-item">{{property.area}}</li>
+    <li class="list-group-item">Bedrooms:{{property.bedrooms}}</li>
+    <li class="list-group-item">Bathrooms:{{property.bathrooms}}</li>
+                 <li class="list-group-item">Hospitals Nearby:{{property.hospitals}}</li>
+                 <li class="list-group-item">Colleges Nearby:{{property.colleges}}</li>
+  </ul>
+             {% if user.is_staff %}
+             <a href="{% url 'edit:update' id=property.id %}" class="btn btn-warning">update</a>
+             <a href="{% url 'edit:delete' id=property.id %}" class="btn btn-danger">delete</a>
+             {% else %}
+             <a href="{% url 'rent:property' id=property.id %}" class="btn btn-success">click me</a>
+             {% endif %}
+            </div>
+        </div>
+        </div>
+    {% endfor %}
+
+
+</div>
+ <div class="mxauto">
+        {% if properties.paginator.num_pages > 1 %}
+        <hr>
+        <div class="text-center">
+            {% for pg in properties.paginator.page_range %}
+            <a href="?page={{pg}}" class="btn btn-light btn-sm {% if products.number == pg %} active {% endif %}">{{pg}}</a>
+            {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+{% endblock %}
