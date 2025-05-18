@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html 
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{user/base}">
+
+<head>
+    <title>Home</title>
+    <link rel="stylesheet" th:href="@{/css/checkout.css}">
+
+  
+
+</head>
+
+<body>
+	 <div layout:fragment="usercontent" class="px-0">
+	 <div class="container py-4">
+  <div class="row">
+    <!-- Left: Address Section -->
+    <div class="col-md-8">
+    
+    <div class="address-box mb-3 d-flex justify-content-between align-items-start d-none">
+      <div>
+        <div class="address-header">
+          <span class="badge bg-secondary">1</span>
+          <span>DELIVERY ADDRESS</span>
+          <span class="text-primary">&#10003;</span>
+        </div>
+      
+        <div class="mt-2">
+          <span class="address-box-name">Achilles Jilson</span>
+          <span class="address-box-details">Kollarikkal House Boat Jetty Road Vettussery Line, vaduthala, Kochi, Kerala - </span>
+        </div>
+       
+      </div>
+      <div>
+        <button class="change-btn" onclick="openAddressCard(this)">CHANGE</button>
+      </div>
+    </div>
+    
+    
+    
+    <div class="rounded p-3 mb-3 new-address address-main">
+      <h5 class="mb-3">1. DELIVERY ADDRESS</h5>
+
+      <div id="address-list"  th:each="address,iterStat:${addresses}">
+      <div th:if="${iterStat.index < 3}" class="visible-address">
+      <!-- Your existing address markup -->
+      <div class="address-card">
+      	 <div class="form-check">
+          <input class="form-check-input" type="radio" name="address" id="address1" th:checked="${address.isDeliveryAddress} == true">
+          <label class="form-check-label w-100" for="address1">
+            <div class="d-flex justify-content-between">
+              <div>
+                <strong class="text-capitalize address-name" th:text="${address.name}">Akin Jilson</strong>
+                <span class="badge bg-secondary mx-2 address-type" th:text="${address.addressType}">WORK</span>
+                <span th:text="${address.phone}">8547515076</span>
+              </div>
+				<a href="#" class="edit-address-btn text-decoration-none fw-semibold"
+				   th:attr="data-id=${address.id},
+				            data-name=${address.name},
+				            data-phone=${address.phone},
+				            data-address=${address.address},
+				            data-locality=${address.locality},
+				            data-landmark=${address.landmark},
+				            data-city=${address.city},
+				            data-state=${address.state},
+				            data-pincode=${address.pincode},
+				            data-addresstype=${address.addressType}">
+				   EDIT
+				</a>
+            </div>
+			<div class="mt-2 address-details" th:text="${address.address + ', ' + address.locality + ', ' + address.city + ', ' + address.state + ' - ' + address.pincode}">
+              Don Bosco Tech ITI, Don Bosco Technical Institute, Near Bharath Petrol Pump,
+              Vaduthala P O, Kochi, Ernakulam, Kerala 
+            </div>
+          </label>
+        </div>
+        <button class="btn btn-dark deliver-btn" th:attr="data-address-id=${address.id}" onclick="setDeliveryAddress(this)">
+		    DELIVER HERE
+		</button>
+        </div>
+    </div>
+     <div th:if="${iterStat.index >= 3}" class="hidden-address d-none">
+      <!-- Your existing address markup -->
+      <div class="address-card">
+      		 <div class="form-check">
+          <input class="form-check-input" type="radio" name="address" id="address1" th:checked="${address.isDeliveryAddress} == true">
+          <label class="form-check-label w-100" for="address1">
+            <div class="d-flex justify-content-between">
+              <div>
+                <strong class="text-capitalize address-name" th:text="${address.name}">Akin Jilson</strong>
+                <span class="badge bg-secondary mx-2 address-type" th:text="${address.addressType}">WORK</span>
+                <span th:text="${address.phone}">8547515076</span>
+              </div>
+				<a href="#" class="edit-address-btn text-decoration-none fw-semibold"
+				   th:attr="data-id=${address.id},
+				            data-name=${address.name},
+				            data-phone=${address.phone},
+				            data-address=${address.address},
+				            data-locality=${address.locality},
+				            data-landmark=${address.landmark},
+				            data-city=${address.city},
+				            data-state=${address.state},
+				            data-pincode=${address.pincode},
+				            data-addresstype=${address.addressType}">
+				   EDIT
+				</a>
+            </div>
+			<div class="mt-2 address-details" th:text="${address.address + ', ' + address.locality + ', ' + address.city + ', ' + address.state + ' - ' + address.pincode}">
+              Don Bosco Tech ITI, Don Bosco Technical Institute, Near Bharath Petrol Pump,
+              Vaduthala P O, Kochi, Ernakulam, Kerala 
+            </div>
+          </label>
+        </div>
+        <button class="btn btn-dark deliver-btn" th:attr="data-address-id=${address.id}" onclick="setDeliveryAddress(this)">
+		    DELIVER HERE
+		</button>
+        </div>
+        		
+        
+    </div>
+       
+		
+      </div>
+<!-- Show More Button -->
+			<div class="text-center mt-3 mb-3" th:if="${#lists.size(addresses) > 3}">
+			  <button class="btn btn-outline-secondary d-inline-flex align-items-center gap-2"
+			          id="toggle-addresses">
+			    <span>Show More</span>
+			    <i class="fa-solid fa-arrow-down" id="arrow-icon"></i>
+			  </button>
+			</div>
+			
+			
+      
+      	<div class="modal fade" id="editAddressModal" tabindex="-1" aria-hidden="true">
+			  <div class="modal-dialog modal-lg modal-dialog-centered">
+			    <div class="modal-content p-4">
+			      <form id="editAddressForm">
+			        <div class="modal-header border-0 pb-0">
+			          <h5 class="modal-title fw-bold">Edit Address</h5>
+			          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			        </div>
+			
+			        <div class="modal-body">
+			          <!-- Use My Location Button -->
+			          
+			
+			          <input type="hidden" name="id" id="edit-id">
+			
+			          <!-- Row 1: Name and Phone -->
+			          <div class="row g-3">
+			            <div class="col-md-6">
+			            <label for="edit-name">Name</label>
+			              <input type="text" class="form-control" name="name" id="edit-name" placeholder="Name" required>
+			              		<div class="text-danger small mt-1" id="error-edit-name"></div>	 
+			              
+			            </div>
+			            <div class="col-md-6">
+			             <label for="edit-phone">Mobile Phone</label>
+			            
+			              <input type="tel" class="form-control" name="phone" id="edit-phone" placeholder="10-digit mobile number" required>
+			              			<div class="text-danger small mt-1" id="error-edit-phone"></div>	 
+			              
+			            </div>
+			
+			            <!-- Row 2: Pincode and Locality -->
+			            <div class="col-md-6">
+			        	<label for="edit-pincode">Pincode</label>
+			            
+			              <input type="text" class="form-control" name="pincode" id="edit-pincode" placeholder="Pincode" required>
+			              	<div class="text-danger small mt-1" id="error-edit-pincode"></div>	 
+			              
+			            </div>
+			            <div class="col-md-6">
+			            <label for="edit-locality">Locality</label>
+			              <input type="text" class="form-control" name="locality" id="edit-locality" placeholder="Locality" required>
+			              <div class="text-danger small mt-1" id="error-edit-locality"></div>
+			            </div>
+			
+			            <!-- Row 3: Full Address -->
+			            <div class="col-12">
+			            <label for="edit-address">Address</label>
+			              <textarea class="form-control" name="address" id="edit-address" placeholder="Address (Area and Street)" rows="2" required></textarea>
+			              <div class="text-danger small mt-1" id="error-edit-address"></div>
+			            </div>
+			
+			            <!-- Row 4: City and State -->
+			            <div class="col-md-6">
+			            <label for="edit-city">City/District/Town</label>
+			              <input type="text" class="form-control" name="city" id="edit-city" placeholder="City/District/Town" required>
+			              <div class="text-danger small mt-1" id="error-edit-city"></div>
+			            </div>
+			            <div class="col-md-6">
+			            <label for="edit-state">State</label>
+			              <input type="text" class="form-control" name="state" id="edit-state" placeholder="State" required>
+			              <div class="text-danger small mt-1" id="error-edit-state"></div>
+			            </div>
+			
+			            <!-- Row 5: Landmark and Alternate Phone -->
+			            <div class="col-md-6">
+			            <label for="edit-landmark">Landmark</label>
+			              <input type="text" class="form-control" name="landmark" id="edit-landmark" placeholder="Landmark (Optional)">
+			              <div class="text-danger small mt-1" id="error-edit-landmark"></div>
+			            </div>
+			          
+			
+			            <!-- Address Type -->
+			            <div class="col-12 mt-2">
+			              <label class="form-label d-block fw-semibold">Address Type</label>
+			              <div class="form-check form-check-inline">
+			                <input class="form-check-input" type="radio" name="addressType" id="edit-home" value="HOME">
+			                <label class="form-check-label" for="edit-home">Home (All day delivery)</label>
+			              </div>
+			              <div class="form-check form-check-inline">
+			                <input class="form-check-input" type="radio" name="addressType" id="edit-work" value="WORK">
+			                <label class="form-check-label" for="edit-work">Work </label>
+			              </div>
+			              <div class="text-danger small mt-1" id="error-edit-addressType"></div>
+			            </div>
+			          </div>
+			        </div>
+			
+			        <div class="modal-footer d-flex gap-3 border-0 pt-3">
+			          <button type="submit" class="btn btn-dark  fw-bold" id="edit-btn">SAVE AND DELIVER HERE</button>
+			          <button type="button" class="btn  btn-link text-decoration-none" data-bs-dismiss="modal">CANCEL</button>
+			        </div>
+			      </form>
+			    </div>
+			  </div>
+			</div>
+
+      	
+      	  
+      
+		<div id="addAddressBtn" class="d-flex rounded text align-items-center  gap-2 p-3 new-address">
+		<i class="fa-solid fa-plus text-primary"></i>
+		<span class="text-primary">Add a new address</span>
+		</div>
+      
+	  <div id="addressForm" class="bg-white p-4 rounded shadow-sm d-none new-address">
+	    <h5 class="mb-4 text-primary"><i class="fa-solid fa-location-dot me-2"></i>ADD A NEW ADDRESS</h5>
+	
+	
+	    <form>
+	      <div class="row g-3">
+	        <div class="col-md-6">
+	          <input type="text" class="form-control" placeholder="Name" name=name id="name"  required>
+						<div class="text-danger small mt-1" id="error-name"></div>	 
+			</div>      
+	        <div class="col-md-6">
+	          <input type="tel" class="form-control" placeholder="+91 10-digit mobile number" name="phone"  maxlength="10" required>
+	        	<div class="text-danger small mt-1" id="error-phone"></div>	 
+	        	
+	        </div>
+	
+	        <div class="col-md-6">
+	          <input type="text" class="form-control" placeholder="Pincode" name="pincode" id="pincode" maxlength="6" pattern="\d{6}"  required>
+	          	        	<div class="text-danger small mt-1" id="error-pincode"></div>	 
+	          
+	        </div>
+	        <div class="col-md-6">
+	          <input type="text" class="form-control" placeholder="Locality" name="locality" id="locality"  required>
+	          	          	        	<div class="text-danger small mt-1" id="error-locality"></div>	 
+	          
+	        </div>
+	
+	        <div class="col-12">
+	          <textarea class="form-control" rows="2" placeholder="Address (Area and Street)" name="address" id="address"  required></textarea>
+	        		          	        	<div class="text-danger small mt-1" id="error-address"></div>	 
+	        	
+	        </div>
+	
+	        <div class="col-md-6">
+	          <input type="text" class="form-control" placeholder="City/District/Town" name="city" id="city"  required>
+	        		          	        	<div class="text-danger small mt-1" id="error-city"></div>	 
+	        	
+	        </div>
+	        <div class="col-md-6">
+	          <input type="text" class="form-control" placeholder="State" name="state" id="state"  required>
+	        		          	        	<div class="text-danger small mt-1" id="error-state"></div>	 
+	        	
+	        </div>
+	
+	        <div class="col-md-6">
+	          <input type="text" class="form-control" name="landmark" id="landmark"  placeholder="Landmark (Optional)">
+	          	          	        	<div class="text-danger small mt-1" id="error-landmark"></div>	 
+	          
+	        </div>
+	       
+	      </div>
+	
+	      <div class="mt-4">
+	        <label class="form-label mb-2">Address Type</label>
+	        <div>
+	          <div class="form-check form-check-inline">
+	            <input class="form-check-input" type="radio" name="addressType" value="HOME" id="home" checked>
+	            <label class="form-check-label" for="home">Home (All day delivery)</label>
+	          </div>
+	          <div class="form-check form-check-inline">
+	            <input class="form-check-input" type="radio" name="addressType" value="WORK" id="work">
+	            <label class="form-check-label" for="work">Work (Delivery between 10 AM - 5 PM)</label>
+	          </div>
+	        </div>
+	        	          	        	<div class="text-danger small mt-1" id="error-addressType"></div>	 
+	        
+	      </div>
+
+      <div class="mt-4 d-flex gap-3">
+        <button type="submit" class="btn btn-dark text-white fw-semibold px-4">SAVE AND DELIVER HERE</button>
+        <a href="#" id="cancelBtn" class="btn btn-outine-warning text-decoration-none text-primary fw-semibold">CANCEL</a>
+      </div>
+    </form>
+  </div>
+
+      	
+
+     </div>
+     
+     
+     <!--------------------------------------------------------------orders--------------------------------------------------------------->
+     
+     
+     
+     
+     
+     
+     
+     <div class="order-box d-flex mb-3 justify-content-between">
+      <div class="order-header">
+          <span class="badge bg-secondary">2</span>
+          <span>OrderSummary</span>
+			
+        </div>
+        <div>
+        <button class="change-order-btn d-none" onclick="openOrderCard()">View</button>
+      </div>
+     </div>
+      <div class="rounded p-3 mb-3 order-main d-none">
+	    
+	
+
+    <!-- Item 1 -->
+    <div class="order-item" th:each="item:${cartItems}">
+    <div>
+    <div th:each="img:${item.product.images}">
+    	      <img th:if="${img.is_main}" th:src="@{${img.image}}" alt="Product Image">
+    	
+    </div>
+    </div>
+      <div class="flex-grow-1">
+        <div><strong th:text="${item.product.name}">sti Printed Men Round Neck Grey T-Shirt</strong></div>
+        <div th:text="${item.product.gender}"></div>
+         <div th:text="${item.product.fit}"></div>
+        <div >Size: <span class="text-capitalize" th:text="${item.variant.size}"></span></div>
+        <div><span class="fw-semibold">Qty</span>: <span th:text="${item.quantity}"></span> </div>
+        <div class="mt-2">
+          <span class="old-price" th:if="${item.product.discountPer>0}" th:text="'$'+ ${item.product.basePrice}">₹1,499</span>
+		<span th:text="'$' + ${item.product.finalPrice}"></span>
+          <span class="discount" th:if="${item.product.discountPer>0}" th:text="${item.product.discountPer} + '% Off'">87% Off</span>
+        </div>
+       
+      </div>
+      <div class="text-end delivery-info">Delivery in 2 days</div>
+    </div>
+
+   
+    <div class="d-flex justify-content-between mt-4">
+      <a href="/view-cart" class="btn btn-outline-dark">← Go Back to Cart</a>
+      <a  class="btn btn-dark" onclick="proceedToPayment()">Continue →</a>
+    </div>
+
+
+  </div>
+
+    <div class="card shadow">
+      <div class="card-headerr">
+                  <span class="badge bg-secondary">3</span>
+ PAYMENT OPTIONS
+      </div>
+    <div class="card-body payment-details d-none ">
+
+  <div class="form-check mb-4">
+    <input class="form-check-input" type="radio" name="paymentMethod" id="razorpay" checked onchange="togglePaymentButtons()">
+    <label class="form-check-label" for="razorpay">
+      <strong>Pay with Razorpay</strong><br>
+      <small class="text-muted">Supports UPI, Debit/Credit cards, Net Banking, Wallets</small>
+    </label>
+  </div>
+
+  <div class="form-check mb-4">
+    <input class="form-check-input" type="radio" name="paymentMethod" id="cod" onchange="togglePaymentButtons()">
+    <label class="form-check-label" for="cod">
+      <strong>Cash on Delivery</strong><br>
+      <small class="text-muted">Pay with cash when you receive the order</small>
+    </label>
+  </div>
+
+  <div class="form-check mb-4">
+    <input class="form-check-input" type="radio" name="paymentMethod" id="wallet" onchange="togglePaymentButtons()">
+    <label class="form-check-label" for="wallet">
+      <strong>Pay with Wallet</strong><br>
+      <small class="text-muted">Use your available wallet balance</small>
+    </label>
+  </div>
+
+  <!-- Razorpay Section -->
+  <div id="razorpaySection" class="payment-option mt-3">
+    <button class="btn btn-outline-primary btn-sm"  onclick="startRazorpayPayment()">Pay with Razorpay</button>
+  </div>
+
+  <!-- COD Section -->
+  <div id="codSection" class="payment-option mt-3 d-none">
+    <button class="btn btn-outline-success btn-sm" onclick="confirmCOD()">Place Order - COD</button>
+  </div>
+
+  <!-- Wallet Section -->
+  <div id="walletSection" class="payment-option mt-3 d-none">
+    <p><strong>Wallet Balance:$</strong><span th:text="${wallet.balance}">0</span>
+</p>
+    <P class="text-danger text-sm" th:if="${wallet != null and totalAmount > wallet.balance}">    Insufficient wallet balance. Please choose another payment method.
+</P>
+	    <button class="btn btn-outline-dark btn-sm" th:attr="data-amount=${totalAmount}" th:classappend="${totalAmount > wallet.balance} ? 'disable' : ''"         th:attrappend="disabled=${totalAmount > wallet.balance} ? 'disabled' : null"
+	     onclick="payWithWallet(this)">Pay with Wallet</button>
+  </div>
+
+</div>
+
+    </div>
+
+   </div> 
+     
+     
+    
+    <!-- Right: Price Details -->
+    <div class="col-md-4">
+      <div class="price-card shadow-sm">
+        <h6 class="fw-bold-black mb-3">PRICE DETAILS</h6>
+        <div class="d-flex justify-content-between">
+          <span>Total Mrp (<span th:text="${productCount}">15</span> items)</span>
+          <span th:text="'$'+${totalMrp}">₹10,455</span>
+        </div>
+        <div class="d-flex justify-content-between">
+          <span >Discount on Mrp</span>
+          <span class="text-success" th:text="'-$'+${totalDiscount}"></span>
+          
+        </div>
+         <div class="d-flex justify-content-between">
+          <span >Coupon Discount</span>
+          <span class="text-success" th:text="'-$'+${couponDiscount}">$0.00</span>
+          
+        </div>
+        <hr>
+        <div class="d-flex justify-content-between fw-bold-black">
+          <span>Total Payable</span>
+          <span id="totalAmount" th:text="'$'+${totalAmount}">₹10,455</span>
+        </div>
+        <div class="mt-2 savings">Your Total Savings on this order <span th:text="'$'+${couponDiscount + totalDiscount}"></span></div>
+        <hr>
+        <div class="text-muted small">Safe and Secure Payments. Easy returns. 100% Authentic products.</div>
+      </div>
+		<!-- Thymeleaf: use [[...]] inside attributes -->
+    </div>
+
+  </div>
+</div>
+
+
+  
+
+		<script src="/js/checkout.js"></script>
+	   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+	   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	 
+	 
+	</div>
+</body>
+</html>

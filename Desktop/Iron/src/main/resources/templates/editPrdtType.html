@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html 
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{base}">
+
+<head>
+    <title>Edit Product Type</title>
+    <link href="/css/prdform.css" rel="stylesheet">
+    
+</head>
+<body>
+
+    <div layout:fragment="content" class="m-5 w-100">
+         <a th:href="@{/admin/view-productTypes/{id}(id=${productTypeDto.id})}" class="btn btn-dark">← Previous</a>
+<div class="container mt-5">
+    <div class="card shadow-lg rounded-4">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Edit Category</h4>
+           
+        </div>
+        <div class="card-body">
+<form th:action="@{/admin/edit-productTypes(id=${productTypeDto.id})}"
+        th:object="${productTypeDto}" 
+      method="post" 
+      enctype="multipart/form-data" novalidate>
+
+    <!-- Type Name -->
+    <div class="mb-3">
+        <label for="name" class="form-label">Type Name</label>
+        <input type="text" th:field="*{name}" 
+               th:classappend="${#fields.hasErrors('name')} ? 'is-invalid'" 
+               class="form-control" required>
+        <div class="invalid-feedback" 
+             th:if="${#fields.hasErrors('name')}" 
+             th:errors="*{name}">Name Error</div>
+    </div>
+
+    <!-- Gender (Radio) -->
+    <div class="mb-3">
+        <label class="form-label">Choose a Gender</label><br>
+
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" 
+                   th:field="*{gender}" id="inlineRadio1" value="Male">
+            <label class="form-check-label" for="inlineRadio1">Male</label>
+        </div>
+
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" 
+                   th:field="*{gender}" id="inlineRadio2" value="Female">
+            <label class="form-check-label" for="inlineRadio2">Female</label>
+        </div>
+
+        <div class="text-danger mt-1"
+             th:if="${#fields.hasErrors('gender')}" 
+             th:errors="*{gender}">Gender is required</div>
+    </div>
+
+    <!-- Description -->
+    <div class="mb-3">
+        <label for="description" class="form-label">Description</label>
+        <textarea th:field="*{description}" 
+                  th:classappend="${#fields.hasErrors('description')} ? 'is-invalid'" 
+                  class="form-control" rows="4" required></textarea>
+        <div class="invalid-feedback" 
+             th:if="${#fields.hasErrors('description') }" 
+             th:errors="*{description}">Description Error</div>
+    </div>
+
+    <!-- Image Upload -->
+    <div class="mb-3">
+        <label for="image" class="form-label">Image</label>
+        <input type="file" th:field="*{image}" 
+               class="form-control" th:classappend="${errorMessage} ? 'is-invalid'" >
+        <div class="invalid-feedback" 
+             th:if="${errorMessage}"
+             th:text="${errorMessage}" 
+             >Image Error</div>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="text-end">
+        <button type="submit" class="btn btn-primary px-4">Submit</button>
+    </div>
+</form>
+<p class="mainerror" th:if="${mainMessage}" th:text="${mainMessage}"></p>
+        </div>
+    </div>
+</div>
+</div>
+
+
+</body>
+</html>

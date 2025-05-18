@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{user/profileBase}">
+
+<head>
+    <title>Profile Info</title>
+    <style>
+    .wallet-card {
+      border: 1px solid #e0e0e0;
+      border-radius: 10px;
+      padding: 20px;
+      background-color: #fff;
+    }
+    .btn-yellow {
+      background-color: #ffd54f;
+      color: #333;
+      font-weight: bold;
+    }
+    .btn-yellow:hover {
+      background-color: #ffca28;
+    }
+    .btn-outline-secondary {
+      border-radius: 10px;
+    }
+    .amount-box {
+      font-size: 24px;
+      font-weight: bold;
+      color: #007b8f;
+    }
+    .info-text {
+      font-size: 14px;
+      color: #777;
+    }
+  </style>
+    
+</head>
+
+<body>
+
+	<section layout:fragment="profilecontent">
+	 <div class="container-fluid" style="max-width: 600px;">
+    <h3 class="mb-4 text-center">WALLET</h3>
+
+    <div class="wallet-card mb-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <h5>Total balance</h5>
+        <div class="amount-box" th:text="'$'+${wallet.balance}">₹0.00</div>
+      </div>
+      <hr />
+      <div class="d-flex justify-content-between align-items-center">
+        <span class="text-muted">Wallet</span>
+        <span class="text-muted" th:text="'$'+${wallet.balance}">₹0.00</span>
+      </div>
+    </div>
+
+    <div class="wallet-card mb-4">
+         <form action="/user/wallet/checkout" method="post">
+    
+      <h5 class="mb-3">Add money to Wallet</h5>
+      <div class="mb-3">
+        <label for="amount" class="form-label">Enter Amount</label>
+        <div class="input-group">
+          <span class="input-group-text">$</span>
+          <input
+            type="number"
+            class="form-control"
+            id="amount"
+            name="amount"
+            value="100"
+            min="1"
+          />
+        </div>
+      </div>
+      <div class="mb-3 d-flex gap-2">
+        <button type="button" class="btn btn-outline-secondary" onclick="displayValue(100)">+ $100</button>
+        <button type="button" class="btn btn-outline-secondary" onclick="displayValue(500)">+ $500</button>
+        <button type="button" class="btn btn-outline-secondary" onclick="displayValue(1000)">+ $1000</button>
+      </div>
+      <div class="info-text mb-3">
+        <i class="bi bi-info-circle"></i> You can add up to $10000.00
+      </div>
+      <button type="submit" class="btn btn-yellow w-100 rounded-pill">Add money to Wallet</button>
+      </form>
+    </div>
+    <div class="text-center">
+      <a href="/user/wallet/view-transaction" class="text-primary fw-semibold">View Transactions</a>
+    </div>
+  </div>
+	
+	
+	<script>
+	function displayValue(amount){
+		const input=document.getElementById("amount")
+		input.value=amount;
+	}
+	</script>
+	
+	
+	
+	
+	</section>
+ 
+</body>
+</html>

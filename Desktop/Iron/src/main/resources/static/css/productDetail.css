@@ -1,0 +1,23 @@
+@charset "UTF-8";
+   .product-image-thumb {
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+    .product-price del {
+      color: gray;
+      margin-left: 10px;
+    }
+    .size-box input[type="radio"] {
+      display: none;
+    }
+    .size-box label {
+      border: 1px solid #ddd;
+      padding: 10px 20px;
+      margin: 5px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    .size-box input[type="radio"]:checked + label {
+      background-color: #000;
+      color: #fff;
+    }

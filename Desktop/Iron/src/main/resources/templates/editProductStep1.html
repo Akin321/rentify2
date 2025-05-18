@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html 
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{base}">
+
+<head>
+    <title>Edit Product</title>
+        <link href="/css/prdform.css" rel="stylesheet">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        
+    
+</head>
+<body>
+
+    <div layout:fragment="content" class="m-5 w-100">
+    <a th:href="@{/admin/view-product/{id} (id=${productDto.id})}" class="btn btn-dark">← Cancel</a>
+<div class="container mt-5">
+
+
+<h2>Step 1 - Edit Product Details</h2>
+
+<form th:action="@{/admin/edit-product/step1/{id} (id=${productDto.id})}" th:object="${productDto}" method="post" novalidate>
+    <!-- Product Name -->
+    <div class="mb-3">
+     <label for="name" class="form-label">Type Name</label>
+        <input type="text" th:field="*{name}" 
+               th:classappend="${#fields.hasErrors('name')} ? 'is-invalid'" 
+               class="form-control" required>
+        <div class="invalid-feedback" 
+             th:if="${#fields.hasErrors('name')}" 
+             th:errors="*{name}">Name Error</div>
+    </div>
+    
+    <div class="mb-3">
+        <label for="description" class="form-label">Description</label>
+        <textarea th:field="*{description}" 
+                  th:classappend="${#fields.hasErrors('description')} ? 'is-invalid'" 
+                  class="form-control" rows="4" required></textarea>
+        <div class="invalid-feedback" 
+             th:if="${#fields.hasErrors('description') }" 
+             th:errors="*{description}">Description Error</div>
+    </div>
+    <div class="mb-3">
+           <label for="price" class="form-label">Base Price</label>
+        <input type="number"  step="0.01" th:field="*{basePrice}" 
+               th:classappend="${#fields.hasErrors('basePrice')} ? 'is-invalid'" 
+               class="form-control" required>
+        <div class="invalid-feedback" 
+             th:if="${#fields.hasErrors('basePrice')}" 
+             th:errors="*{basePrice}">Name Error</div>
+    </div>
+    <div class="mb-3">
+    
+           <label for="discount" class="form-label">Discount %</label>
+        <input type="number" th:field="*{discountPer}" 
+               th:classappend="${#fields.hasErrors('discountPer')} ? 'is-invalid'" 
+               class="form-control" required>
+        <div class="invalid-feedback" 
+             th:if="${#fields.hasErrors('discountPer')}" 
+             th:errors="*{discountPer}">Name Error</div>
+    </div>
+    
+    <div class="mb-3">
+    
+           <label for="discountvalue"  class="form-label">Max Discount Value</label>
+        <input type="number"  step="0.01" th:field="*{maxDiscountprice}" 
+               th:classappend="${#fields.hasErrors('maxDiscountprice')} ? 'is-invalid'" 
+               class="form-control" required>
+        <div class="invalid-feedback" 
+             th:if="${#fields.hasErrors('maxDiscountprice')}" 
+             th:errors="*{maxDiscountprice}">Name Error</div>
+    </div>
+    
+       <!-- Gender Dropdown -->
+<div class="mb-3">
+    <label for="gender" class="form-label">Gender</label>
+    <select th:field="*{gender}" 
+            id="gender-select" 
+            class="form-control" 
+            th:classappend="${#fields.hasErrors('gender')} ? 'is-invalid'" 
+            required>
+        <option value="">Select Gender</option>
+        <option value="Male">Men</option>
+        <option value="Female">Women</option>
+        
+    </select>
+    <div class="invalid-feedback" 
+         th:if="${#fields.hasErrors('gender')}" 
+         th:errors="*{gender}">Gender Error</div>
+</div>
+
+<!-- Product Type Dropdown -->
+<div class="mb-3">
+    <label for="product-type-select" class="form-label">Product Type</label>
+   <select th:field="*{productType}" 
+        id="product-type-select" 
+        class="form-control" 
+        th:classappend="${#fields.hasErrors('productType')} ? 'is-invalid'" 
+        required>
+    <option value="">Select Product Type</option>
+    <!-- Options are loaded dynamically -->
+</select>
+<input type="hidden" id="selected-product-type" th:value="*{productType}" />
+
+    <div class="invalid-feedback" 
+         th:if="${#fields.hasErrors('productType')}" 
+         th:errors="*{productType}">Product Type Error</div>
+</div>
+<!-- Collection Dropdown with Search -->
+<div class="mb-3">
+    <label for="collection-search" class="form-label">Search Collection</label>
+    <input type="text" id="collection-search" class="form-control mb-2" placeholder="Search collections...">
+
+    <label for="collection-select" class="form-label">Select Collection</label>
+    <select th:field="*{collection}"
+            id="collection-select"
+            class="form-control"
+            size="5"
+            th:attr="data-selected=${productDto.collection}"
+            th:classappend="${#fields.hasErrors('collection')} ? 'is-invalid'"
+            required>
+    </select>
+
+    <div class="invalid-feedback"
+         th:if="${#fields.hasErrors('collection')}"
+         th:errors="*{collection}">Collection Error</div>
+</div>
+
+
+  <div class="mb-3">
+    
+           <label for="color" class="form-label">Color</label>
+        <input type="text" th:field="*{color}" 
+               th:classappend="${#fields.hasErrors('color')} ? 'is-invalid'" 
+               class="form-control" required>
+        <div class="invalid-feedback" 
+             th:if="${#fields.hasErrors('color')}" 
+             th:errors="*{color}">Name Error</div>
+    </div>
+    
+    
+<div class="mb-3">
+    <label for="fit" class="form-label">FitType</label>
+    <select th:field="*{fit}" 
+            id="fit-select" 
+            class="form-control" 
+            th:classappend="${#fields.hasErrors('fit')} ? 'is-invalid'" 
+            required>
+        <option value="">Select fitType</option>
+        <option value="slimFit">slimfit</option>
+        <option value="oversizedFit">oversizedFit</option>
+        <option value="regularFit">regularFit</option>
+        
+    </select>
+    <div class="invalid-feedback" 
+         th:if="${#fields.hasErrors('fit')}" 
+         th:errors="*{fit}">Gender Error</div>
+</div>
+
+
+    <div class="text-center">
+        <button type="submit" class="btn btn-dark px-5">Continue</button>
+    </div>
+</form>
+
+<script>
+    // On gender change, load product types
+$(document).ready(function () {
+    let selectedProductType = $('#selected-product-type').val();
+    let gender = $('#gender-select').val();
+
+    if (gender) {
+        fetchProductTypes(gender, selectedProductType);
+    }
+
+    $('#gender-select').on('change', function () {
+        let gender = $(this).val();
+        fetchProductTypes(gender, null); // reset product type
+    });
+
+    function fetchProductTypes(gender, selectedProductType) {
+        $.get('/admin/add-products/product-types/' + gender, function (data) {
+            let $select = $('#product-type-select');
+            $select.empty().append('<option value="">Select Product Type</option>');
+
+            data.forEach(function (type) {
+                let selected = selectedProductType == type.id ? 'selected' : '';
+                $select.append('<option value="' + type.id + '" ' + selected + '>' + type.name + '</option>');
+            });
+        });
+    }
+});
+
+
+
+    // Collection search filter
+
+    let allCollections = [];
+
+    // Load collections on page load
+    $(document).ready(function () {
+        $.get('/admin/add-products/collections', function (data) {
+            allCollections = data;
+            renderCollections(data);
+
+            // Restore selected value from data-selected
+            let selectedVal = $('#collection-select').attr('data-selected');
+            if (selectedVal) {
+                $('#collection-select').val(selectedVal);
+            }
+        });
+    });
+
+    // Filter collections on search input
+    $('#collection-search').on('keyup', function () {
+        const keyword = $(this).val().toLowerCase();
+        const filtered = keyword
+            ? allCollections.filter(c => c.name.toLowerCase().includes(keyword))
+            : allCollections;
+
+        renderCollections(filtered);
+    });
+
+    // Helper to render dropdown options
+    function renderCollections(collections) {
+        const $select = $('#collection-select');
+        const selectedVal = $select.attr('data-selected');
+
+        $select.empty();
+
+        collections.forEach(collection => {
+            const option = $('<option>', {
+                value: collection.id,
+                text: collection.name
+            });
+
+            if (selectedVal && collection.id.toString() === selectedVal) {
+                option.prop('selected', true);
+            }
+
+            $select.append(option);
+        });
+    }
+
+</script>
+
+</div>
+</div>
+
+</body>
+</html>

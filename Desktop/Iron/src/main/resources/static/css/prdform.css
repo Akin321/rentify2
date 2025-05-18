@@ -1,0 +1,10 @@
+@charset "UTF-8";
+input[type="text"], textarea {
+  text-transform: capitalize;
+}
+
+.mainerror{
+	color:red;
+	  text-transform: capitalize;
+	
+}

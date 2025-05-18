@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{base}">
+
+<head>
+    <title>Product Details</title>
+
+</head>
+
+<body>
+<div layout:fragment="content" class="container my-5">
+     <a href="/admin/view-products" class="btn btn-dark ml-2 mb-3">
+                    <i class="fas fa-arrow-left"></i> Back to Products
+                </a>
+    <div class="card shadow-lg">
+        <div class="card-body">
+            <h2 class="card-title mb-4">🛍️ Product Details</h2>
+            
+            <div class="row">
+                <!-- Product Info -->
+                <div class="col-md-6 border-right">
+                    <h4 class="text-primary">Product Information</h4>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><strong>Name:</strong> <span th:text="${product.name}"></span></li>
+                        <li class="list-group-item"><strong>Description:</strong> <span th:text="${product.description}"></span></li>
+                        <li class="list-group-item"><strong>Base Price:</strong> ₹<span th:text="${product.basePrice}"></span></li>
+                        <li class="list-group-item"><strong>Discount %:</strong> <span th:text="${product.discountPer}"></span>%</li>
+                        <li class="list-group-item"><strong>Gender:</strong> <span th:text="${product.gender}"></span></li>
+                        <li class="list-group-item"><strong>Fit:</strong> <span th:text="${product.fit}"></span></li>
+                        <li class="list-group-item"><strong>Color:</strong> <span th:text="${product.color}"></span></li>
+                        <li class="list-group-item"><strong>Collection:</strong> <span th:text="${product.collection.name}"></span></li>
+                        <li class="list-group-item"><strong>Product Type:</strong> <span th:text="${product.productType.name}"></span></li>
+                        <li class="list-group-item"><strong>Max Discount Price:</strong> ₹<span th:text="${product.maxDiscountPrice}"></span></li>
+                        <li class="list-group-item"><strong>Final Price:</strong> ₹<span th:text="${product.finalPrice}"></span></li>
+                        <li class="list-group-item">
+                            <strong>Status:</strong> 
+                            <span th:text="${product.is_active ? 'Active' : 'Inactive'}" 
+                                  th:classappend="${product.is_active} ? 'text-success' : 'text-danger'"></span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Product Images -->
+                <div class="col-md-6">
+                    <h4 class="text-primary">Images</h4>
+                    <div class="row">
+                        <div class="col-md-6 mb-3" th:each="image : ${product.images}">
+                            <div class="card">
+                                <img th:src="@{${image.image}}" class="card-img-top img-fluid" alt="Product Image">
+                                <div class="card-body p-2">
+                                    <p th:if="${image.is_main}" class="badge badge-warning mb-0 w-100 text-center">Main Image</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Variant Section -->
+            <div class="mt-5">
+                <h4 class="text-primary">Variants</h4>
+                <table class="table table-bordered">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Size</th>
+                            <th>Stock</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="variant : ${product.variants}">
+                            <td th:text="${variant.size}"></td>
+                            <td th:text="${variant.stock}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Edit Discount -->
+            <div class="mt-5">
+                <h4 class="text-primary">Edit Discount</h4>
+                <form th:action="@{/admin/edit-productdiscount/{id}(id=${product.id})}" method="post" class="form-inline">
+                    <div class="form-group mr-3">
+                        <label for="discountPer" class="mr-2">New Discount (%)</label>
+                        <input type="number" id="discountPer" name="discountPer" class="form-control" required min="0" max="100">
+                    </div>
+                    <button type="submit" class="btn btn-warning"><i class="fas fa-edit"></i> Update</button>
+                </form>
+            </div>
+
+            <!-- Edit Product -->
+            <div class="mt-4">
+                <a th:href="@{/admin/edit-product/step1/{id}(id=${product.id})}" class="btn btn-primary">
+                    <i class="fas fa-pen"></i> Edit Product Details
+                </a>
+           
+            </div>
+        </div>
+
+    </div>
+     <script th:inline="javascript">
+    /*<![CDATA[*/
+    toastr.options = {
+        "closeButton": true,
+        "debug": false,
+        "newestOnTop": true,
+        "progressBar": true,
+        "positionClass": "toast-top-center",
+        "preventDuplicates": true,
+        "timeOut": "5000", // 10 seconds
+        "extendedTimeOut": "2000"
+    };
+
+    let successMessage = /*[[${successMessage}]]*/ '';
+    let errorMessage = /*[[${errorMessage}]]*/ '';
+
+    if (successMessage) {
+        toastr.success(successMessage);
+    }
+
+    if (errorMessage) {
+        toastr.error(errorMessage);
+    }
+</script>
+</div>
+</body>
+</html>

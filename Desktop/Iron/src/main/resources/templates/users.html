@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html 
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{base}">
+    
+    <!-- Toastr CSS -->
+<!-- jQuery (required by Toastr) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<!-- Toastr CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+
+<!-- Toastr JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+ 
+
+<head>
+    <title>Home</title>
+</head>
+
+<body>
+
+
+
+    <div layout:fragment="content" class="m-5 w-100">
+    <h2 class="text-center">Users</h2>
+    <p th:if="${error}" th:text="${error}"></p>
+    <form th:action="@{/admin/view-user}" method="get" class="d-flex gap-2 mb-3">
+    <input type="text" name="keyword" th:value="${param.keyword}" placeholder="Search users..." class="form-control" />
+    <button type="submit" class="btn btn-primary">Search</button>
+
+    <!-- Clear Search Button -->
+    <a th:href="@{/admin/view-user}" class="btn btn-outline-secondary">Clear</a>
+</form>
+    
+    	<table class="table w-100">
+  <thead>
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col">Mobile</th>
+      <th scope="col">Email</th>
+      <th scope="col">Joined on</th>
+       <th scope="col">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr th:each="user:${users}">
+      <th scope="row" th:text="${user.name}"></th>
+      <td th:text="${user.phone}">Mark </td>
+      <td th:text="${user.email}">Otto</td>
+      <td th:text="${user.created_at}">@mdo</td>
+      <td th:if="${user.is_active}"><a th:href="@{'/admin/block-user/' + ${user.id} + '?active=' + ${!user.is_active}}" ><button type="button" class="btn btn-danger">Block</button></a></td>
+            <td th:if="${!user.is_active}"><a th:href="@{'/admin/block-user/' + ${user.id} + '?active=' + ${!user.is_active}}" ><button type="button" class="btn btn-success">UnBlock</button></a></td>
+    </tr>
+
+  </tbody>
+</table>
+
+ 
+    <script th:inline="javascript">
+    /*<![CDATA[*/
+    toastr.options = {
+        "closeButton": true,
+        "debug": false,
+        "newestOnTop": true,
+        "progressBar": true,
+        "positionClass": "toast-top-center",
+        "preventDuplicates": true,
+        "timeOut": "5000", // 10 seconds
+        "extendedTimeOut": "2000"
+    };
+
+    let successMessage = /*[[${successMessage}]]*/ '';
+    let errorMessage = /*[[${errorMessage}]]*/ '';
+
+    if (successMessage) {
+        toastr.success(successMessage);
+    }
+
+    if (errorMessage) {
+        toastr.error(errorMessage);
+    }
+</script>
+<div class="d-flex justify-content-center">
+<nav aria-label="Page navigation example ">
+  <ul class="pagination" th:if="${totalPages > 1}">
+
+    <!-- Previous Button -->
+    <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+        <a class="page-link" th:href="@{'/admin/view-user'(page=${currentPage - 1},,keyword=${keyword})}" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+        </a>
+    </li>
+
+    <!-- Page Numbers -->
+    <li class="page-item"
+        th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+        th:classappend="${i} == ${currentPage} ? 'active'">
+        <a class="page-link" th:href="@{'/admin/view-user'(page=${i},,keyword=${keyword})}" th:text="${i + 1}"></a>
+    </li>
+
+    <!-- Next Button -->
+    <li class="page-item" th:classappend="${currentPage + 1 == totalPages} ? 'disabled'">
+        <a class="page-link" th:href="@{'/admin/view-user'(page=${currentPage + 1},keyword=${keyword})}" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+        </a>
+    </li>
+
+</ul>
+
+</nav>
+
+</div>
+
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,18 @@
+@charset "UTF-8";
+      .otp-input {
+            width: 3rem;
+            text-align: center;
+            font-size: 1.5rem;
+        }
+        .otp-container input:not(:last-child) {
+            margin-right: 10px;
+        }
+        .resend-link {
+            margin-top: 15px;
+            display: none;
+        }
+        .otp-image {
+            max-width: 100%;
+            width: 300px;
+            border-radius: 10px;
+        }

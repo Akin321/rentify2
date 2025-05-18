@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html 
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{base}">
+
+<head>
+    <title>Add Product</title>
+        <link href="/css/prdform.css" rel="stylesheet">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        
+    
+</head>
+<body>
+
+    <div layout:fragment="content" class="m-5 w-100">
+           <a href="/admin/add-products/step2" class="btn btn-dark">← Previous</a>
+    
+<div class="container">
+   <div class="container mt-4">
+    <h2>Final Step: Edit Product Images</h2>
+<form th:action="@{/admin/edit-product/step3/{id}(id=${productDto.id})}"
+      th:object="${productDto}" method="post" enctype="multipart/form-data">
+
+    <!-- MAIN IMAGE -->
+    <div class="mb-3">
+        <label>Main Image</label><br>
+        <div th:if="${productDto.existingMainImageUrl != null}">
+            <img th:src="@{${productDto.existingMainImageUrl}}" alt="Main Image" width="150"><br>
+        </div>
+        <input type="file" name="mainImage" class="form-control mt-2">
+        <small class="text-muted">Uploading a new image will replace the current main image.</small>
+    </div>
+
+    <!-- EXISTING ADDITIONAL IMAGES WITH DELETE CHECKBOX -->
+    <div class="mb-3">
+        <label>Existing Additional Images</label><br>
+        <div class="row">
+            <div class="col-md-3" th:each="imgUrl : ${productDto.existingImages}">
+                <img th:src="@{${imgUrl}}" alt="Image" class="img-thumbnail mb-1" style="width: 100%;">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="deletedImages" th:value="${imgUrl}" id="deleteImage__${imgUrl.hashCode()}">
+                    <label class="form-check-label" th:for="'deleteImage__' + ${imgUrl.hashCode()}">Delete</label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- UPLOAD NEW ADDITIONAL IMAGES -->
+    <div class="mb-3">
+        <label>Add New Additional Images</label>
+        <input type="file" name="additionalImages" class="form-control" multiple>
+    </div>
+
+    <button type="submit" class="btn btn-success">Save Changes</button>
+    <a th:href="@{/admin/edit-product/step2/{id}(id=${productDto.id})}" class="btn btn-secondary">← Previous</a>
+</form>
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+</div>
+</div>
+
+</body>
+</html>

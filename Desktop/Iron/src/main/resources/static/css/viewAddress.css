@@ -1,0 +1,28 @@
+@charset "UTF-8";
+.tag {
+            background-color: #f0f0f0;
+            color: #555;
+            padding: 4px 8px;
+            font-size: 12px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+        .card .dropdown-toggle::after {
+            display: none;
+        }
+        .address-container {
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 2rem;
+            background-color: #fff;
+        }
+        .address-desc{
+        text-transform:capitalize;
+        }
+        .fit-content{
+         width: fit-content;
+    min-width: auto;
+        }

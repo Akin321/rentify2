@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html 
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{base}">
+
+<head>
+<title>Product Type Detail</title>
+<link href="/css/PrdCont.css" rel="stylesheet">
+</head>
+<body>
+
+    <div layout:fragment="content" class="m-5 w-100">
+     <a th:href="@{/admin/view-productTypes}" class="btn btn-dark">← Back to Category</a>
+<div class="container mt-5">
+        
+
+    <div class="card shadow-lg p-4 rounded-4">
+        <div class="row g-4 align-items-center">
+            <!-- Image -->
+            <div class="col-md-4 text-center">
+                <img th:src="@{${productType.image}}" alt="Product Image" class="product-image img-fluid">
+            </div>
+
+            <!-- Info -->
+            <div class="col-md-8">
+                <h3 class="card-title mb-3" th:text="${productType.name}">Product Name</h3>
+                <p><strong>Description:</strong></p>
+                <p th:text="${productType.description}">Product description goes here...</p>
+                <p><strong>Gender:</strong> <span th:text="${productType.gender}">Male</span></p>
+                <p>
+                    <strong>Status:</strong>
+                    <span th:if="${productType.is_active}" class="badge bg-success">Active</span>
+                    <span th:unless="${productType.is_active}" class="badge bg-danger">Inactive</span>
+                </p>
+
+                <!-- Edit Button -->
+                 <a th:href="@{'/admin/edit-productTypes/' + ${productType.id}}" class="btn btn-warning mt-3">Edit Product Type</a>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    toastr.options = {
+        "closeButton": true,
+        "debug": false,
+        "newestOnTop": true,
+        "progressBar": true,
+        "positionClass": "toast-top-center",
+        "preventDuplicates": true,
+        "timeOut": "5000", // 10 seconds
+        "extendedTimeOut": "2000"
+    };
+
+    let successMessage = /*[[${successMessage}]]*/ '';
+ 
+
+    if (successMessage) {
+        toastr.success(successMessage);
+    }
+
+ 
+</script>
+</div>
+
+</body>
+</html>

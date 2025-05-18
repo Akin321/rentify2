@@ -1,0 +1,50 @@
+.sidebar-class {
+  width: 250px;
+  background-color: #ffffff; /* white background */
+  min-height: 100vh;
+  border-right: 1px solid #dee2e6; /* subtle right border */
+  color: #000; /* black text for contrast */
+}
+
+.sidebar {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.sidebar li a {
+  display: block;
+  padding: 15px 20px;
+  text-decoration: none;
+  color: #000; /* black link text */
+  font-weight: 500;
+}
+
+.sidebar li a:hover,
+.sidebar li a.active {
+  background-color: #f8f9fa; /* light gray hover */
+  color: #000;
+}
+
+
+.container-fluid{
+	padding:0;
+}
+.navbar-title {
+  font-size: 2rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.navcontent{
+	padding:1rem;
+}
+.fa-dumbbell{
+	color:white;
+	font-size:2rem;
+}
+.fa-user{
+	font-size:1.5rem;
+}
+
+

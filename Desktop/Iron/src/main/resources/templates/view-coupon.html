@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html 
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{base}">
+
+<head>
+<title>Coupon</title>
+
+  <style>
+    .sidebar-box {
+      border: 1px solid #dee2e6;
+      border-radius: 10px;
+      padding: 1rem;
+      background-color: #f8f9fa;
+    }
+    .sidebar-box h6 {
+      font-weight: 600;
+    }
+    .table th, .table td {
+      vertical-align: middle;
+    }
+  </style>
+
+</head>
+<body>
+
+    <div layout:fragment="content" class="m-5 w-100">
+
+  <div class="row">
+          <h3 class="text-center mb-3">Coupons</h3>
+  
+    <!-- Sidebar Filter -->
+    <div class="col-md-3 col-lg-2 p-4">
+     <form method="GET" action="/admin/view-coupon">
+    <div class="sidebar-box">
+        <h6 class="mb-2">Filter by Status</h6>
+
+        <!-- Clear All Link aligned to the right -->
+        <div class="d-flex justify-content-end mb-2">
+            <a href="/admin/view-coupon" class="text-decoration-none">Clear All</a>
+        </div>
+
+        <!-- Active Status Radio Button -->
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="status" value="Active" id="active" th:checked="${status != null && status.name() == 'Active'}" />
+            <label class="form-check-label" for="active">Active</label>
+        </div>
+
+        <!-- Expired Status Radio Button -->
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="status" value="Expired" id="expired" th:checked="${status != null && status.name() == 'Expired'}" />
+            <label class="form-check-label" for="expired">Expired</label>
+        </div>
+
+        <!-- Apply Filter Button -->
+        <div class="mt-4 d-flex gap-2">
+            <button type="submit" class="btn btn-primary w-100">Apply Filter</button>
+        </div>
+    </div>
+</form>
+
+    </div>
+
+    <!-- Main Content -->
+    <div class="col-md-9 col-lg-10 p-4">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+    <a href="/admin/add-coupon" class="btn btn-primary">Add Coupon</a>
+        <form class="d-flex" method="GET" action="/admin/view-coupon" style="max-width: 300px;">
+          <input class="form-control me-2" type="search" name="keyword" th:value="*{keyword}" placeholder="Search by Code" />
+          <button class="btn btn-outline-primary me-2" type="submit">Search</button>
+             <a href="/admin/view-coupon"><button class="btn btn-outline-danger" type="button">Clear</button></a>     
+          
+        </form>
+      </div>
+
+      <!-- Coupon Table -->
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover shadow-sm text-center">
+          <thead class="table-primary">
+            <tr>
+              <th>#</th>
+              <th>Code</th>
+              <th>Discount (%)</th>
+              <th>Expiry Date</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Dummy Data -->
+            <tr th:each="coupon,iter:${coupons}">
+              <td th:text="${iter.index+1}">1</td>
+              <td th:text="${coupon.couponCode}">WELCOME20</td>
+              <td th:text="${coupon.discountPer}">20%</td>
+              <td th:text="${coupon.expiryDate}">2025-12-31</td>
+              <td><span class="badge bg-success" th:text="${coupon.status}">Active</span></td>
+              <td>
+                <a th:href="@{/admin/coupon/{id}(id=${coupon.id})}" class="btn btn-sm btn-outline-primary">View More</a>
+                <form th:action="@{/admin/coupon/delete/{id}(id=${coupon.id})}" method="get" style="display:inline;" onsubmit="return confirm('Delete this coupon?');">
+                  <button class="btn btn-sm btn-outline-danger">Remove</button>
+                </form>
+              </td>
+            </tr>
+            
+            <!-- Add more rows dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+    	<nav aria-label="Page navigation example" class="d-flex justify-content-center align-items-center">
+  <ul class="pagination" th:if="${totalPages > 1}">
+
+    <!-- Previous Button -->
+    <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+        <a class="page-link" th:href="@{'/admin/view-coupon'(page=${currentPage - 1},keyword=${keyword},status=${status})}" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+        </a>
+    </li>
+
+    <!-- Page Numbers -->
+    <li class="page-item"
+        th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+        th:classappend="${i} == ${currentPage} ? 'active'">
+        <a class="page-link" th:href="@{'/admin/view-coupon'(page=${i},keyword=${keyword},status=${status})}" th:text="${i + 1}"></a>
+    </li>
+
+    <!-- Next Button -->
+    <li class="page-item" th:classappend="${currentPage + 1 == totalPages} ? 'disabled'">
+        <a class="page-link" th:href="@{'/admin/view-coupon'(page=${currentPage + 1},keyword=${keyword},status=${status})}" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+        </a>
+    </li>
+
+</ul>
+
+</nav>
+    
+    
+    
+    </div>
+</body>
+</html>

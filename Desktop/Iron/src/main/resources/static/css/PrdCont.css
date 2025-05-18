@@ -1,0 +1,11 @@
+@charset "UTF-8";
+ .product-image {
+            height: 300px;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+        
+.btn{
+	
+	font-weight:500;
+}

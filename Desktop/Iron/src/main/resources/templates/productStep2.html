@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html 
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{base}">
+
+<head>
+    <title>Add Product</title>
+        <link href="/css/prdform.css" rel="stylesheet">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        
+    
+</head>
+<body>
+
+    <div layout:fragment="content" class="m-5 w-100">
+       <a href="/admin/add-products/step1" class="btn btn-dark">← Previous</a>
+<div class="container">
+   <div class="container mt-4">
+    <h2>Step 2: Add Product Variants</h2>
+
+    <form th:action="@{/admin/add-products/step2}" th:object="${productDto}" method="post">
+
+        <div th:each="variant, stat : *{variants}" class="row mb-3 align-items-center">
+            <div class="col-md-6">
+                <label class="form-label">Variant Type</label>
+                <input type="text" class="form-control" th:field="*{variants[__${stat.index}__].size}" placeholder="Variant name (e.g., Size: M)">
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Quantity</label>
+                <input type="number" min="0" class="form-control" th:field="*{variants[__${stat.index}__].stock}" placeholder="Quantity">
+            </div>
+        </div>
+
+       <div class="text-center">
+        <button type="submit" class="btn btn-dark px-5">Continue</button>
+    </div>
+    </form>
+</div>
+</div>
+
+
+
+</div>
+
+</body>
+</html>

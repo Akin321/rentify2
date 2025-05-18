@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html 
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{user/base}">
+
+<head>
+    <title>ProductDetails</title>
+    <link rel="stylesheet" th:href="@{/css/productDetail.css}">
+</head>
+
+<body>
+	 <div layout:fragment="usercontent" class="px-0">
+	 		<div class="container py-5">
+				  <div class="row ">
+				    <!-- Left: Images -->
+				    <div class="col-md-6">
+				    
+				       <div class="row g-1">
+					    <div class="col-md-6" th:each="img : ${product.images}">
+					      <img th:src="@{${img.image}}" class="img-fluid product-image-thumb">
+					    </div>
+					  </div>
+				  
+				    </div>
+				
+				    <!-- Right: Product Info -->
+				    <div class="col-md-6">
+				    <div class="d-flex flex-column justify-content-center align-items-center">
+					<h5 class="text-danger" th:if="${product.discountPer > 0}">
+					  <span th:text="${product.discountPer}"></span>% OFF
+					</h5>
+				      <h2 th:text="${product.name}">Stylish Cotton Shirt</h2>
+				      <p class="text-muted"> <span th:text="${product.fit}">Slim Fit</span></p>
+				      <div class="product-price h4">
+						  <span th:text="'$'+${product.finalPrice}">699</span>
+						  <del><span th:if="${product.discountPer>0}" th:text="'$'+${product.basePrice}">999</span></del>
+						</div>
+
+				      <div class="mb-2">
+				        ⭐⭐⭐⭐☆ (4.2)
+				      </div>
+				
+				      <!-- Size Selection -->
+				     <!-- Check if variants exist -->
+				<form th:action="@{/add-cart}" method="post">
+				
+				  <!-- Hidden productId input -->
+				  <input type="hidden" name="productId" th:value="${product.id}" />
+				
+				  <!-- Hidden variantId input (set via JS based on selected size) -->
+				  <input type="hidden" name="variantId" id="selectedVariantId" />
+				
+				  <!-- Variant Size Selection -->
+				  <div th:if="${product.variants != null and !product.variants.isEmpty()}">
+				    <div class="mb-3 text-center">
+				      <label class="form-label"><strong>Select Size</strong></label>
+				
+				      <div class="size-box d-flex flex-nowrap gap-2 overflow-auto" style="white-space: nowrap;">
+				        <div class="form-check form-check-inline"
+				             th:each="size : ${product.variants}"
+				             style="flex: 0 0 auto;">
+				          <input class="form-check-input"
+				                 type="radio"
+				                 th:id="'size-' + ${size.size}"
+				                 name="size"
+				                 th:value="${size.id}"
+				                 th:disabled="${size.stock <= 0}" 
+				                 onclick="document.getElementById('selectedVariantId').value = this.value" />
+				
+				          <label class="form-check-label text-uppercase"
+				                 th:for="'size-' + ${size.size}"
+				                 th:classappend="${size.stock <= 0} ? ' text-decoration-line-through text-muted' : ''"
+				                 th:text="${size.size}">
+				          </label>
+				        </div>
+				      </div>
+				    </div>
+				  </div>
+				
+				  <!-- Out of Stock Message -->
+				  <div class="text-danger d-flex justify-content-center align-items-center mb-3"
+				       th:if="${product.variants == null or product.variants.?[stock > 0].size() == 0}">
+				    Out of Stock
+				  </div>
+				
+				  <!-- Buttons -->
+				  <div class="mb-4 d-flex justify-content-center align-items-center gap-3">
+				    <a th:href="@{/user/add-wishlist/{id}(id=${product.id})}">
+				      <button type="button" class="btn btn-outline-secondary me-2">♡ Add to Wishlist</button>
+				    </a>
+					<button id="addToBagBtn" type="submit" class="btn btn-dark" disabled>Add to Bag</button>
+				  </div>
+				
+				</form>
+
+				
+				      <!-- Description -->
+				      <div class="w-100 text-center ">
+						  <p>
+						    <a class="btn btn-link p-0 fw-semibold text-black" data-bs-toggle="collapse" href="#description" role="button" aria-expanded="false" aria-controls="description">
+						      View Description
+						    </a>
+						  </p>
+						  <div class="collapse" id="description">
+						    <div class="card card-body" th:text="${product.description}">
+						      This stylish cotton shirt is perfect for casual and semi-formal wear. Breathable fabric and perfect fit.
+						    </div>
+						  </div>
+						</div>
+
+
+				    </div>
+				    </div>
+				    </div>
+				 
+				
+				  <!-- You May Also Like -->
+				  <div class="mt-5">
+				    <h4>You may also like</h4>
+				    <div class="row">
+				      <div class="col-md-3" th:each="simproduct:${similarProducts}">
+				      <div th:each="img : ${simproduct.images}">
+						<a th:href="@{/user/view-product/{id}(id=${simproduct.id})}">
+  							<img th:if="${img.getIs_main}" th:src="@{${img.image}}" class="img-fluid">
+							</a>
+						</div>
+						<div class="d-flex flex-column gap-1">
+						  <span class="fw-semibold" th:text="${simproduct.name}"></span>
+				        <span class="text-muted text-capitalize" th:text="${simproduct.fit}"></span>
+				         <span class="text-muted text-capitalize" th:text="${simproduct.color}"></span>
+				        <span>
+				        <span th:text="'$'+${simproduct.finalPrice}" class="fw-semibold"></span>
+				        <span th:if="${simproduct.discountPer > 0}" 
+					          class="text-muted text-decoration-line-through text-danger ms-2"
+					          th:text="'$' + ${simproduct.basePrice}">
+					    </span>
+					    </span>
+						</div>
+				      
+				      </div>
+				    
+				    </div>
+				  </div>
+				</div>
+	 
+		<script src="/js/productDetail.js"></script>
+	 
+	 </div>
+</body>
+</html>

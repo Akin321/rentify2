@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{user/profileBase}">
+
+<head>
+    <title>Refer And Earn</title>
+
+</head>
+
+<body>
+
+<section layout:fragment="profilecontent">
+<div class="container mt-5" style="max-width: 600px;">
+    <div class="card shadow-lg rounded">
+        <div class="card-header bg-primary text-white text-center">
+            <h4 class="mb-0">Refer & Earn</h4>
+        </div>
+
+        <div class="card-body">
+            <p class="text-muted text-center">
+                Invite your friends and earn rewards! For every successful registration using your link, you'll receive a coupon.
+            </p>
+
+            <label class="form-label fw-bold">Your Referral Link:</label>
+            <div class="input-group mb-3">
+                <input type="text"
+                       id="referralLink"
+                       class="form-control"
+                       th:value="${referralLink}"
+                       readonly>
+                <button class="btn btn-outline-primary" onclick="copyReferralLink()">Copy</button>
+            </div>
+
+            <div class="text-center">
+                <span class="badge bg-success">Reward: ₹100 Coupon</span>
+            </div>
+
+            <small class="form-text text-muted mt-3 d-block text-center">
+                Share this link with your friends. The more you refer, the more you earn!
+            </small>
+        </div>
+    </div>
+</div>
+
+<script>
+    function copyReferralLink() {
+        const input = document.getElementById('referralLink');
+        input.select();
+        input.setSelectionRange(0, 99999); // For mobile
+        document.execCommand("copy");
+    }
+</script>
+
+
+
+</section>
+
+</body>
+</html>

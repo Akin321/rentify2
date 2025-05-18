@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+ 
+  <title>Invoice</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 30px;
+      color: #333;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+   
+    .section {
+      margin-bottom: 20px;
+    }
+    .section-title {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    table, th, td {
+      border: 1px solid #aaa;
+    }
+    th, td {
+      padding: 10px;
+      text-align: left;
+    }
+    .footer {
+      margin-top: 40px;
+      font-size: 12px;
+      text-align: center;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+<img th:src="${invoiceDto.logo}" width="100px" alt="logo" />
+    <div>Invoice</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Invoice Details</div>
+    <p><strong>Invoice Number:</strong><span th:text="${invoiceDto.invoiceNumber}"></span> </p>
+    <p><strong>Order ID:</strong><span th:text="${invoiceDto.orderId}"></span> </p>
+    <p><strong>Order Date:</strong><span th:text="${invoiceDto.orderDate}"></span> </p>
+    <p><strong>Delivery Date:</strong><span th:text="${invoiceDto.deliveryDate}"></span> </p>
+    <p><strong>Payment Method:</strong><span th:text="${invoiceDto.paymentMethod}"></span></p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Billing Address</div>
+    <p th:text="${invoiceDto.address}"></p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Product Details</div>
+    <table>
+      <thead>
+        <tr>
+          <th>Product Name</th>
+          <th>Quantity</th>
+          <th>Total MRP</th>
+          <th>Discount</th>
+          <th>Total Amount Paid</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td th:text="${invoiceDto.productName}">Men's Casual Shirt</td>
+          <td th:text="${invoiceDto.quantity}">2</td>
+          <td th:text="${invoiceDto.totalmrp}">Rs. 1000.00</td>
+          <td th:text="${invoiceDto.discount}">Rs. 150.00</td>
+          <td th:text="${invoiceDto.totalamount}">Rs. 850.00</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="footer">
+    Thank you for shopping with us!<br></br>	
+    This is a computer-generated invoice and does not require a signature.
+  </div>
+
+</body>
+</html>

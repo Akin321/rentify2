@@ -1,0 +1,89 @@
+	<!DOCTYPE html>
+	<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" class="h-100">
+	<head>
+	<meta charset="UTF-8">
+	<title>Iron</title>
+	    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Font Awesome (for icons) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+	    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+		<script src="https://kit.fontawesome.com/c386a9710a.js" crossorigin="anonymous"></script>
+		<link rel="stylesheet" href="/css/base.css">
+		
+<!-- jQuery (required by Toastr) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<!-- Toastr CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+
+<!-- Toastr JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+
+	</head>
+	<body class="d-flex flex-column h-100">
+		<div class="flex-grow-1">
+			<header>
+					<nav class="navbar navbar-expand-lg bg-dark position-relative">
+				  <div class="container-fluid d-flex justify-content-between align-items-center navcontent">
+				
+				    <!-- Placeholder to reserve left space -->
+				    <div style="width: 40px;"><i class="fa-solid fa-dumbbell"></i></div>
+				
+				    <!-- Center Title -->
+				
+				      <h4 class="m-0 text-white navbar-title">Iron</h4>
+				  
+				
+				
+				    <!-- User Icon (Right Side) -->
+				    <div>
+				      <a class="nav-link text-white" href="#">
+				        <i class="fa-solid fa-user"></i>
+				      </a>
+				    </div>
+				  </div>
+				</nav>
+
+				
+
+			
+			</header>
+			<div class="container-fluid  d-flex">
+  <!-- Sidebar -->
+				  <div class="sidebar-class">
+				    <ul class="sidebar">
+				      <li><a href="#" class="active">Dashboard</a></li>
+				      <li><a href="/admin/view-order">Orders</a></li>
+				      <li><a href="/admin/view-products">Products</a></li>
+				      <li><a href="/admin/view-user">Users</a></li>
+				      <li><a href="/admin/view-productTypes">Category</a></li>
+				      <li><a href="/admin/view-collections">Collections</a></li>
+				      <li><a href="/admin/view-coupon">Coupons</a></li>
+				      <li><a href="/return/request">Return Requests</a></li>
+				      <li><a href="#">Banners</a></li>
+				      <li><a href="#">Payments</a></li>
+				      <li><a href="#">Logout</a></li>
+				    </ul>
+				  </div>
+  
+					
+			
+					<div layout:fragment="content" class="flex-grow-1 p-3">
+					</div>
+					
+					
+			</div>
+		</div>
+	<footer class="d-flex justify-content-center align-items-center border-top py-3 text-center">
+		<p>© 2025 | Iron Limited | All Rights Reserved. | We Do Gym.</p>
+	</footer>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+		
+	</body>
+	</html>

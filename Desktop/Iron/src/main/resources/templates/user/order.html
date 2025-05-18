@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html 
+    xmlns:th="http://www.thymeleaf.org" 
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{user/base}">
+
+<head>
+    <title>Home</title>
+    <link rel="stylesheet" th:href="@{/css/order.css}">
+</head>
+
+<body>
+	 <div layout:fragment="usercontent" class="px-0">
+	  <div class="container py-4">
+	  
+	<div th:if="${(orderItems != null and !orderItems.empty) or filterApplied}">
+	  <h4 class="mb-3 text-center">Welcome to Your Order Timeline</h4>
+	 	  <div class="row mb-4">
+    <div class="col-md-3">
+      <form class="filter-box" action="/user/view-order" method=get id="order-filter-form">
+        <h5>Filters</h5>
+        <div class="d-flex justify-content-between align_items-center">
+        <p><strong>Order Status</strong></p>
+        <a href="/user/view-order" class="text-decoration-none" >ClearAll</a>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="status" value="onTheWay" id="on_the_way"  th:checked="${status != null and status.contains('onTheWay')}">
+          <label class="form-check-label" for="on_the_way" >On The Way</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="status" value="Delivered" id="delivered" th:checked="${status != null and status.contains('Delivered')}">
+          <label class="form-check-label" for="delivered">Delivered</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="status" value="Cancelled" id="cancelled" th:checked="${status != null and status.contains('Cancelled')}">
+          <label class="form-check-label" for="cancelled">Cancelled</label>
+        </div>
+        <button type="submit" class="btn btn-dark mt-3">Apply Filters</button>
+      </form>
+    </div>
+
+    <div class="col-md-9" id="order-container">
+    <form action="/user/view-order" method="get" id="searchForm">
+  <div class="d-flex justify-content-center align-items-start gap-3 position-relative mb-3">
+     <div class="position-relative w-100">
+      <input type="text" 
+             class="form-control pe-5" 
+             name="keyword" 
+             placeholder="Search your orders..." 
+             th:value="${keyword}" 
+             id="keywordInput" />
+
+      <!-- ❌ Clear button inside input -->
+      <button type="button" 
+              class="btn position-absolute top-50 translate-middle-y end-0 me-2 py-0 px-2 border"
+              onclick="clearSearch()" 
+              id="clearBtn" 
+              style="z-index: 10; font-size: 1rem;" 
+              hidden>
+        &times;
+      </button>
+    </div>
+
+
+    <button type="submit" class="btn btn-primary">Search</button>
+  </div>
+</form>
+
+	<div th:each="orderItem:${orderItems}">
+      <!-- In-Progress Order Card -->
+      <div class="border p-3 mb-4" th:if="${orderItem.orderStatus.ordinal() <= 2}">
+        <div class="row align-items-center" >
+        <span class=" mb-2  text-primary fw-semibold" th:text="${orderItem.order.paymentType}">
+ 
+</span>
+          <div class="col-md-4 d-flex">
+            <img th:src="@{${orderItem.image}}" class="me-3" alt="product" width="80px" height="100px">
+            <div>
+              <h5 th:text="${orderItem.productName}">Power T-Shirt</h5>
+              <p class="mb-1" th:text="${orderItem.fitName}">Oversized Fit - <span th:text="${orderItem.color}">Black</span></p>
+              <p class="mb-1">Size: <span th:text="${orderItem.size}">M</span></p>
+              <p>Qty:<span th:text="${orderItem.quantity}"></span></p>
+            </div>
+          </div>
+          <div class="col-md-4 d-flex justify-content-center align-items-center">
+            <strong th:text="'$'+${orderItem.totalAmount}">$80</strong>
+          </div>
+          
+          <div class="col-md-4 text-end">
+            <button class="btn btn-danger mb-2 cancel-order-btn" th:attr="data-order-id=${orderItem.id}">Cancel Order</button>
+            <p><strong>Delivery Expected By </strong ><span th:text="${orderItem.order.expectedDeliveryDate}"></span></p>
+            <p th:text="${orderItem.order.address}"></p>
+            <p class="text-success">Your Order Has Been Placed</p>
+          </div>
+        </div>
+        
+
+       <div class="status-step">
+		  <div class="step">
+		    <div class="step-circle" th:classappend="${orderItem.orderStatus.ordinal() >= 0} ? ' active'"></div>
+		    <p>Order placed</p>
+		    <span  th:text="${orderItem.order.orderDate}"></span>
+		  </div>
+		  <div class="step">
+		    <div class="step-circle" th:classappend="${orderItem.orderStatus.ordinal() >= 1} ? ' active'"></div>
+		    <p>Shipped</p>
+		    <span>&nbsp;</span> <!-- empty span for spacing -->
+		  </div>
+		  <div class="step">
+		    <div class="step-circle" th:classappend="${orderItem.orderStatus.ordinal() >= 2} ? ' active'"></div>
+		    <p>Out for delivery</p>
+		    <span>&nbsp;</span>
+		  </div>
+		  <div class="step">
+		    <div class="step-circle" th:classappend="${orderItem.orderStatus.ordinal() >= 3} ? ' active'"></div>
+		    <p>Delivered</p>
+		    <span>&nbsp;</span>
+		  </div>
+		</div>
+
+
+
+      <!-- End In-Progress -->
+	</div>
+      <!-- Delivered Order Card (No Progress Bar) -->
+      <div th:if="${orderItem.orderStatus.name()=='Delivered'}" class="border p-3 mb-4">
+        <div  class="row align-items-center">
+        <span class=" mb-2  text-primary fw-semibold" th:text="${orderItem.order.paymentType}">
+ 
+</span>
+          <div class="col-md-4 d-flex">
+            <img th:src="@{${orderItem.image}}" class="me-3" alt="product" width="80px" height="100px">
+            <div>
+              <h5 th:text="${orderItem.productName}">Power T-Shirt</h5>
+              <p class="mb-1" th:text="${orderItem.fitName}">Oversized Fit - <span th:text="${orderItem.color}">Black</span></p>
+              <p class="mb-1">Size: <span th:text="${orderItem.size}">M</span></p>
+              <p>Qty:<span th:text="${orderItem.quantity}"></span></p>
+            </div>
+          </div>
+          <div class="col-md-4 d-flex justify-content-center align-items-center">
+            <strong th:text="'$'+${orderItem.totalAmount}">$80</strong>
+          </div>
+          
+          
+          <div class="col-md-4 text-end">
+            <button type="button" class="btn btn-primary" th:onclick="getInvoice([[${orderItem.id}]])">Invoice ⬇️</button>
+            <button th:if="${orderItem.returnRequest==null}" class="btn btn-outline-secondary mb-2 returnBtn"  th:attr="data-return-id=${orderItem.id}">Return</button>
+            <span th:if="${orderItem.returnRequest!=null && orderItem.returnRequest.status.name()=='Pending'}" class="badge bg-warning text-dark mb-2">Return Requested</span>
+            <span th:if="${orderItem.returnRequest!=null && orderItem.returnRequest.status.name()=='Rejected'}" class="badge bg-danger text-dark mb-2">Return Rejected</span>
+			<p th:if="${orderItem.returnRequest != null && orderItem.returnRequest.status.name() == 'Rejected'}"
+			      class="text-danger fw-semibold fst-italic"
+			      th:text="${orderItem.returnRequest.rejectMessage}" >
+			</p>
+                  <p><strong>Order Date:</strong> <span th:text="${orderItem.order.orderDate}">May 10, 2025</span></p>
+            <p><strong>Delivered On </strong><span th:text="${orderItem.deliveryDate}"></span> </p>
+            <p class="text-success">Your Item Has Been Delivered</p>
+          </div>
+        </div>
+        
+      </div>
+      <!-- End Delivered -->
+      <div th:if="${orderItem.orderStatus.name()=='Cancelled'}" class="border p-3 mb-4 bg-light">
+  <div class="row align-items-center">
+<span class=" mb-2  text-primary fw-semibold" th:text="${orderItem.order.paymentType}">
+ 
+</span>
+
+    <!-- Product Info -->
+    <div class="col-md-4 d-flex">
+      <img th:src="@{${orderItem.image}}" class="me-3" alt="product" width="80px" height="100px">
+      <div>
+        <h5 th:text="${orderItem.productName}">Power T-Shirt</h5>
+        <p class="mb-1" th:text="${orderItem.fitName}">Oversized Fit - 
+          <span th:text="${orderItem.color}">Black</span>
+        </p>
+        <p class="mb-1">Size: <span th:text="${orderItem.size}">M</span></p>
+        <p>Qty: <span th:text="${orderItem.quantity}">1</span></p>
+      </div>
+    </div>
+
+    <!-- Price Info -->
+    <div class="col-md-4 d-flex justify-content-center align-items-center">
+      <strong th:text="'$'+${orderItem.totalAmount}">$80</strong>
+    </div>
+
+    <!-- Cancelled Info -->
+    <div class="col-md-4 text-end">
+      <span class="badge bg-danger mb-2">Order Cancelled</span>
+      <p><strong>Order Date:</strong> <span th:text="${orderItem.order.orderDate}">May 10, 2025</span></p>
+      <p><strong>Cancelled On:</strong> <span th:text="${orderItem.cancelDate}">May 16, 2025</span></p>
+    </div>
+
+  </div>
+</div>
+      
+      
+      <div th:if="${orderItem.orderStatus.name() == 'Returned'}" class="border p-3 mb-4 bg-light">
+  <div class="row align-items-center">
+
+    <!-- Payment Type -->
+    <span class="mb-2 text-primary fw-semibold" th:text="${orderItem.order.paymentType}">Prepaid</span>
+
+    <!-- Product Info -->
+    <div class="col-md-4 d-flex">
+      <img th:src="@{${orderItem.image}}" class="me-3" alt="product" width="80px" height="100px">
+      <div>
+        <h5 th:text="${orderItem.productName}">Power T-Shirt</h5>
+        <p class="mb-1" th:text="${orderItem.fitName}">Oversized Fit - 
+          <span th:text="${orderItem.color}">Black</span>
+        </p>
+        <p class="mb-1">Size: <span th:text="${orderItem.size}">M</span></p>
+        <p>Qty: <span th:text="${orderItem.quantity}">1</span></p>
+      </div>
+    </div>
+
+    <!-- Price Info -->
+    <div class="col-md-4 d-flex justify-content-center align-items-center">
+      <strong th:text="'₹' + ${orderItem.totalAmount}">₹80</strong>
+    </div>
+
+    <!-- Return Info -->
+    <div class="col-md-4 text-end">
+      <span class="badge bg-warning text-dark mb-2">Order Returned</span>
+      <p><strong>Order Date:</strong> <span th:text="${orderItem.order.orderDate}">May 10, 2025</span></p>
+      <p><strong>Return Date:</strong> <span th:text="${orderItem.returnRequest.approvedDate}">May 17, 2025</span></p>
+
+      <!-- Invoice Button -->
+                 <button type="button" class="btn btn-primary" th:onclick="getInvoice([[${orderItem.id}]])">Invoice ⬇️</button>
+
+    </div>
+
+  </div>
+</div>
+      
+
+    </div>
+    
+    
+  </div>
+	 	</div>
+	 	</div>
+	 	<div th:if="${orderItems == null or orderItems.empty}">
+
+		<div th:if="${!filterApplied}" class="text-center my-5 p-5 border rounded bg-light">
+    <img src="https://cdn-icons-png.flaticon.com/512/4076/4076505.png" alt="No Orders" style="width: 120px;" class="mb-3">
+    <h4>No Orders Yet</h4>
+    <p class="text-muted">You haven't placed any orders yet. Start shopping to see them here!</p>
+    <div class="d-flex justify-content-center align-items-center gap-3">
+        <a th:href="@{/user/view-products(gender=Male)}" class="btn btn-dark mt-3">Shop Men's</a>
+                <a th:href="@{/user/view-products(gender=Female)}" class="btn btn-outline-dark mt-3">Shop Women's</a>
+        
+    
+    </div>
+  </div>
+  </div>
+	 	
+	 
+	 	<nav aria-label="Page navigation example" class="d-flex justify-content-center align-items-center">
+  <ul class="pagination" th:if="${totalPages > 0}">
+
+    <!-- Previous Button -->
+    <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+        <a class="page-link" th:href="@{'/user/view-order'(page=${currentPage - 1},keyword=${keyword},status=${status})}" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+        </a>
+    </li>
+
+    <!-- Page Numbers -->
+    <li class="page-item"
+        th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+        th:classappend="${i} == ${currentPage} ? 'active'">
+        <a class="page-link" th:href="@{'/user/view-order'(page=${i},keyword=${keyword},status=${status})}" th:text="${i + 1}"></a>
+    </li>
+
+    <!-- Next Button -->
+    <li class="page-item" th:classappend="${currentPage + 1 == totalPages} ? 'disabled'">
+        <a class="page-link" th:href="@{'/user/view-order'(page=${currentPage + 1},keyword=${keyword},status=${status})}" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+        </a>
+    </li>
+
+</ul>
+
+</nav>
+	 </div>
+	 <script>
+  const input = document.getElementById('keywordInput');
+  const clearBtn = document.getElementById('clearBtn');
+
+  // Show or hide the clear button based on input value
+  input.addEventListener('input', () => {
+    clearBtn.hidden = input.value.trim() === '';
+  });
+
+  function clearSearch() {
+    input.value = '';
+    document.getElementById('searchForm').submit();
+  }
+
+  // Show the button on page load if keyword exists
+  window.addEventListener('DOMContentLoaded', () => {
+    clearBtn.hidden = input.value.trim() === '';
+  });
+  
+  function getInvoice(orderItemId){
+	  console.log(orderItemId);
+	  fetch(`/user/invoice/${orderItemId}`,{
+		  method:'GET',
+		  headers: {
+	            'Accept': 'application/pdf'
+	        }
+	  })
+	  .then(response=>{
+		  if(!response.ok){
+	            throw new Error("Network response was not OK");
+
+		  }
+		  return response.blob();
+	  })
+	  .then(blob=>{
+		  const url= window.URL.createObjectURL(blob);
+		  const a = document.createElement('a');
+	        a.href = url;
+	        a.download = `invoice-${orderItemId}.pdf`;
+	        document.body.appendChild(a);
+	        a.click();
+	        a.remove();
+	        window.URL.revokeObjectURL(url);
+	    })
+	    .catch(error => {
+	        console.error('Error fetching invoice PDF:', error);
+	        alert('Failed to download invoice.');
+	    });
+  }
+	  document.addEventListener("DOMContentLoaded", function () {
+		    document.querySelectorAll(".cancel-order-btn").forEach(function (button) {
+		      button.addEventListener("click", function () {
+		        const orderId = this.getAttribute("data-order-id");
+
+		        Swal.fire({
+		          title: 'Are you sure?',
+		          text: "Do you really want to cancel this order?",
+		          icon: 'warning',
+		          showCancelButton: true,
+		          confirmButtonColor: '#d33',
+		          cancelButtonColor: '#3085d6',
+		          confirmButtonText: 'Yes, cancel it!',
+		          cancelButtonText: 'No, keep it'
+		        }).then((result) => {
+		          if (result.isConfirmed) {
+		            cancelOrder(orderId); // Your actual cancel logic
+		          }
+		        });
+		      });
+		    });
+		  });
+  		
+	  function cancelOrder(orderId) {
+		  fetch(`/user/cancelorder/${orderId}`, {
+		    method: 'POST', // or 'DELETE'
+		    headers: {
+		      'Content-Type': 'application/json'
+		    }
+		  }) .then(response => {
+			    if (!response.ok) {
+			        throw new Error('Order cancellation failed');
+			      }
+			      return response.json();
+			    })
+			    .then(data => {
+			      if (data.refund) {
+			        Swal.fire({
+			          icon: 'success',
+			          title: 'Order Cancelled',
+			          text: `Your order has been cancelled successfully. ₹${data.refundAmount} will be credited to your wallet.`,
+			          confirmButtonColor: '#3085d6'
+			        }).then(response => {
+			            window.location.reload();
+			        });
+			      } else {
+			        Swal.fire({
+			          icon: 'success',
+			          title: 'Order Cancelled',
+			          text: 'Your order has been cancelled successfully. Not eligible for refund.',
+			          confirmButtonColor: '#3085d6'
+			        }).then(response => {
+			            window.location.reload();
+			        });
+			      }
+			    })
+			    .catch(error => {
+			      Swal.fire({
+			        icon: 'error',
+			        title: 'Failed',
+			        text: error.message,
+			        confirmButtonColor: '#d33'
+			      });
+			    });
+		}
+	  document.addEventListener("DOMContentLoaded", function () {
+		  document.querySelectorAll(".returnBtn").forEach(function (button) {
+		    button.addEventListener("click", function () {
+		      const orderItemId = this.getAttribute("data-return-id");
+
+		      Swal.fire({
+		        title: 'Are you sure?',
+		        text: "Do you really want to return this item?",
+		        icon: 'warning',
+		        showCancelButton: true,
+		        confirmButtonColor: '#d33',
+		        cancelButtonColor: '#3085d6',
+		        confirmButtonText: 'Yes, return it!',
+		        cancelButtonText: 'No, keep it'
+		      }).then((result) => {
+		        if (result.isConfirmed) {
+		          Swal.fire({
+		            title: 'Reason for Return',
+		            input: 'textarea',
+		            inputLabel: 'Please provide a reason:',
+		            inputPlaceholder: 'Enter your reason here...',
+		            inputAttributes: {
+		              'aria-label': 'Reason for return'
+		            },
+		            showCancelButton: true,
+		            confirmButtonText: 'Submit',
+		            cancelButtonText: 'Cancel',
+		            inputValidator: (value) => {
+		              if (!value) {
+		                return 'You must enter a reason!';
+		              }
+		            }
+		          }).then((inputResult) => {
+		            if (inputResult.isConfirmed) {
+		              const reason = inputResult.value;
+
+		              const formData = new URLSearchParams();
+		              formData.append("orderItemId", orderItemId);
+		              formData.append("reason", reason);
+
+		              fetch("/return-request", {
+		                method: "POST",
+		                headers: {
+		                  'Content-Type': 'application/x-www-form-urlencoded'
+		                },
+		                body: formData
+		              })
+		              .then(response => {
+		                if (response.ok) {
+		                  Swal.fire('Submitted!', 'Return request has been sent.', 'success').then(() => {
+		                    location.reload(); // optional: refresh UI
+		                  });
+		                } else {
+		                  Swal.fire('Error', 'Failed to submit return request.', 'error');
+		                }
+		              })
+		              .catch(error => {
+		                Swal.fire('Error', 'Something went wrong.', 'error');
+		              });
+		            }
+		          });
+		        }
+		      });
+		    });
+		  });
+		});
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+   
+          
+	 </div>
+	 
+</body>
+</html>

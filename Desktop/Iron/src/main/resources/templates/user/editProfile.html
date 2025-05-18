@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{user/profileBase}">
+
+<head>
+    <title>Profile Info</title>
+<link rel="stylesheet" href="/css/editProfile.css">
+
+</head>
+
+<body>
+
+<section layout:fragment="profilecontent">
+
+
+
+<div class="form-container">
+    <h2>Edit Profile</h2>
+    <form th:action="@{/user/updateProfile}" th:object="${userDto}" method="post" enctype="multipart/form-data">
+ 
+	<!-- Display all validation errors -->
+
+
+	
+    
+    <div class="form-group">
+        <label for="name" class="form-label">Name</label>
+       <input type="text" th:field="*{name}" 
+               th:classappend="${#fields.hasErrors('name')} ? 'is-invalid'" 
+               class="form-control" required>
+        <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</div>
+    </div>
+
+    <div class="form-group">
+        <label for="email">Email</label>
+        <div style="display: flex; gap: 10px;">
+            <input type="email" id="email" th:field="*{email}" class="form-control" readonly required
+                   th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'">
+            <button type="button" class="btn btn-outline-secondary" onclick="openOtpModal()">Change</button>
+        </div>
+            <p id="otpsuccess" style="color: green; margin-top: 10px;"></p>
+        
+      </div>
+      <div>
+    <label>Gender</label>
+    <div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" 
+                   id="genderMale" name="gender" value="Male" 
+                   th:field="*{gender}" style="padding:0">
+            <label class="form-check-label" for="genderMale">Men</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" 
+                   id="genderFemale" name="gender" value="Female" 
+                   th:field="*{gender}" style="padding:0">
+            <label class="form-check-label" for="genderFemale">Women</label>
+        </div>
+    </div>
+    <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}">
+        Gender Error
+    </div>
+</div>
+      
+
+    <div class="form-group">
+        <label for="mobileNumber">Mobile Number</label>
+        <input type="text" id="mobileNumber" th:field="*{phone}" class="form-control"
+               th:classappend="${#fields.hasErrors('phone')} ? 'is-invalid'">
+        <div class="invalid-feedback" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}">Phone Error</div>
+    </div>
+
+    <div class="form-group">
+        <label for="image">Profile Image</label>
+        <input type="file" id="image" th:field="*{image}"  th:classappend="${#fields.hasErrors('image')} ? 'is-invalid'" class="form-control">
+        <div class="invalid-feedback" th:if="${#fields.hasErrors('image')}" th:errors="*{image}">Image Error</div>
+    </div>
+
+    <div class="form-group">
+    <a href="/user/view-profile" class="btn btn-outline-dark">Cancel</a>
+        <button type="submit" class="btn btn-dark" id="saveBtn">Save Changes</button>
+        
+    </div>
+ 
+    
+</form>
+	<!-- OTP Modal -->
+<div id="otpModal" style="display: none; position: fixed; top: 20%; left: 50%; z-index: 999; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.2); width: 400px;">
+    <h5>Change Email</h5>
+
+    <div class="form-group">
+        <label>New Email</label>
+        <input type="email" id="newEmail" class="form-control" placeholder="Enter new email" />
+    </div>
+    <button class="btn btn-secondary" onclick="sendOtpToNewEmail()">Send OTP</button>
+
+    <div class="form-group mt-3" id="otpSection" style="display: none;">
+        <label>Enter OTP</label>
+        <input type="text" id="otpInput" class="form-control" placeholder="Enter OTP" />
+        <button class="btn btn-success mt-2" onclick="verifyNewEmailOtp()">Verify</button>
+    </div>
+
+    <p id="otpMessage" style="color: green; margin-top: 10px;"></p>
+    <div class="mt-2">
+        <button class="btn btn-outline-danger" onclick="closeOtpModal()">Cancel</button>
+    </div>
+</div>
+
+<!-- Overlay -->
+<div id="overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:998;"></div>
+		
+
+</div>
+<script src="/js/editProfile.js" ></script>
+</section>
+
+</body>
+</html>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html 
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{user/base}">
+
+<head>
+    <title>My Cart</title>
+    <link rel="stylesheet" th:href="@{/css/viewCart.css}">
+ 
+</head>
+
+<body>
+  <div layout:fragment="usercontent" class="px-0">
+    <div class="cart-header text-center">
+      <h2>My Bag</h2>
+    </div>
+
+    <div class="container my-4" th:if="${#lists.size(cartItems) > 0}">
+      <div class="row">
+        <div class="col-lg-8 d-flex justify-content-between mb-3">
+          <div>Total <span th:text="${#lists.size(cartItems)}">3</span> Items In Cart</div>
+			<a href="#"
+			   th:attr="data-url=@{/remove-allCartItems}"
+			   data-message="Do you want to remove all items from your cart?"
+			   onclick="confirmRemove(this)"
+			   class="text-danger text-decoration-none">
+			   Remove All
+			</a>       
+ 		</div>
+      </div>
+
+      <div class="row g-4">
+        <!-- Left Column -->
+        <div class="col-lg-8">
+          <div class="scrollable-cart">
+            <div class="d-flex align-items-start border rounded p-3 mb-3 cart-item" th:each="item:${cartItems}">
+              <a th:href="@{/user/view-product/{id}(id=${item.product.id})}">
+                <img th:each="img : ${item.product.images}"
+                     th:if="${img.is_main}"
+                     th:src="@{${img.image}}"
+                     alt="Main Image"
+                     class="me-3" />
+              </a>
+              <div class="flex-grow-1">
+                <h5 th:text="${item.product.name}">Product Name</h5>
+                <p th:text="${item.product.gender}"></p>
+                <p th:text="${item.product.fit}"></p>
+                <p th:text="${item.product.color}"></p>
+
+                <p>
+                  <strong>Size:</strong> <span th:text="${item.variant.size}">M</span> &nbsp;
+                  <strong>Qty:</strong>
+                  <div class="input-group d-inline-flex align-items-center w-auto" th:if="${item.quantity > 0}" style="width: 130px;">
+                    <button class="btn btn-outline-secondary btn-sm" type="button" th:attr="onclick=|changeQty(this, -1, '${item.id}')|">−</button>
+                    <input type="number" class="form-control form-control-sm text-center"  th:value="${item.quantity}" min="1" th:max="${item.variant.stock}" readonly>
+                    <button class="btn btn-outline-secondary btn-sm" type="button" th:attr="onclick=|changeQty(this, 1, '${item.id}')|">+</button>
+                  </div>
+				<div th:if="${item.quantity <= 0}" class="text-danger">Out of Stock</div>               
+				 </p>
+				 <!-- Show message if quantity exceeds stock -->
+			<div th:if="${item.quantity > item.variant.stock}" class="text-danger mt-1" style="font-size: 0.85rem;">
+  				Only <span th:text="${item.variant.stock}">0</span> items in stock
+			</div>
+
+                <div class="d-flex align-items-center gap-2">
+                  <p class="price" th:text="'$' + ${item.product.finalPrice}">₹839</p>
+                  <p class="old-price" th:if="${item.product.discountPer > 0}" th:text="'₹' + ${item.product.basePrice}">₹2,399</p>
+						<p class="discount" th:if="${item.product.discountPer > 0}"
+						   th:text="|${item.product.discountPer}% OFF|">65% OFF</p>
+                </div>
+
+                <p class="text-muted">7-day return policy available</p>
+              </div>
+				<a href="#"
+				   th:attr="data-url=@{/remove-cart(id=${item.id})}"
+				   data-message="Do you want to remove this item from your cart?"
+				   onclick="confirmRemove(this)">
+				   <button class="remove-btn">✖</button>
+				</a>            
+				</div>
+          </div>
+
+          <!-- Wishlist Suggestion -->
+          <div class="wishlist-box mt-3">
+            <div class="d-flex align-items-center gap-2">
+              <i class="fa-solid fa-bookmark"></i>
+              <span class="fw-semibold">Add More From Wishlist</span>
+            </div>
+            <a href="/user/view-wishlist">
+                        <i class="fa-solid fa-chevron-right text-dark"></i>
+            
+            </a>
+          </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="col-lg-4">
+          <div class="summary-box">
+          <div class="d-flex justify-content-between">
+            <h5>Apply Coupons</h5>
+            <div class="d-flex gap-2">
+                <button class="btn btn-dark btn-sm mb-3" onclick="getCoupons()">Apply</button>
+            <button th:if="${couponDiscount > 0}" class="btn btn-danger btn-sm mb-3" onclick="cancelCoupons()">Cancel</button>
+            
+            </div>
+        
+            
+			</div>
+			<span class="text-success text-sm" th:if="${couponDiscount > 0}" th:text="'Yay you saved additional ₹'+${couponDiscount}"></span>
+            <hr>
+
+            <p class="d-flex justify-content-between mb-2">
+              <span>Total MRP</span>
+              <strong th:text="'$' + ${totalMrp}">₹0.00</strong>
+            </p>
+            <p class="d-flex justify-content-between mb-2">
+              <span>Discount on MRP</span>
+              <strong class="text-success" th:text="'-$' + ${totalDiscount}">₹0.00</strong>
+            </p>
+            <p class="d-flex justify-content-between mb-2">
+              <span>Coupon Discount</span>
+              <strong class="text-success" th:text="'-$'+${couponDiscount}">₹0.00</strong>
+            </p>
+            <p class="d-flex justify-content-between mb-2">
+              <span><strong>Total Amount</strong></span>
+              <strong th:text="'₹' + ${totalAmount}">₹0.00</strong>
+            </p>
+
+			<button class="place-order-btn mt-3" onclick="checkCartBeforeOrder()">PLACE ORDER</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="d-flex flex-column align-items-center justify-content-center gap-3" 
+     th:if="${#lists.size(cartItems) <= 0}">
+    <img src="https://constant.myntassets.com/checkout/assets/img/empty-bag.webp" alt="bag-img" width="150px">
+    <div class="d-flex flex-column justify-content-center align-items-center">
+        <p class="fw-semibold">Hey, it feels so light!</p>
+        <p class="fw-light">There is nothing in your bag. Let's add some items.</p>
+    </div>
+    <a class="btn btn-outline-danger p-2" href="/user/view-wishlist">ADD ITEMS FROM WISHLIST</a>
+</div>
+
+
+<!-- Coupon Popup Modal -->
+<div id="couponModal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <h3>APPLY COUPON</h3>
+
+    <div class="input-group">
+      <input type="text" id="manualCoupon" placeholder="Enter coupon code" />
+      <button id="checkButton"  onclick="checkCoupon()">CHECK</button>
+         <div id="invalidFeedback" class="invalid-feedback tex-danger text-sm">invalid coupon</div>
+      
+    </div>
+
+    <div id="couponList"></div>
+
+    <div class="footer">
+   
+      <button onclick="applySelectedCoupon()">APPLY</button>
+    </div>
+  </div>
+</div>
+
+
+
+
+   	<script src="/js/viewCart.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  </div>
+
+  
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html 
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{base}">
+
+<head>
+    <title>Add Collection</title>
+        <link href="/css/prdform.css" rel="stylesheet">
+    
+</head>
+<body>
+
+    <div layout:fragment="content" class="m-5 w-100">
+             <a th:href="@{/admin/view-collections}" class="btn btn-dark">← Back to Collections</a>
+    
+<div class="container mt-5">
+    <div class="card shadow-lg rounded-4">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Add Collections</h4>
+           
+        </div>
+        <div class="card-body">
+<form th:action="@{/admin/add-collections}"
+
+      method="post"> 
+
+    <!-- Type Name -->
+    <div class="mb-3">
+        <label for="name" class="form-label">Collection Name</label>
+        <input type="text" name="name"
+               th:classappend="${error!=null} ? 'is-invalid'" 
+               class="form-control" required>
+        <div class="invalid-feedback" 
+             th:if="${error}" 
+             th:text="${error}">Name Error</div>
+    </div>
+     <div class="text-end">
+        <button type="submit" class="btn btn-primary px-4">Submit</button>
+    </div>
+</form>
+        </div>
+    </div>
+</div>
+</div>
+
+
+</body>
+</html>

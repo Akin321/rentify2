@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{user/profileBase}">
+
+<head>
+    <title>Profile Info</title>
+    <link rel="stylesheet" href="/css/profile.css">
+    
+</head>
+
+<body>
+
+<section layout:fragment="profilecontent">
+
+
+
+   <div class="profile-container text-center ">
+            <img th:if="${user.image==null}" src="https://www.shareicon.net/data/512x512/2016/09/15/829459_man_512x512.png" 
+                 alt="Profile Image" 
+                 class="profile-image">
+                 <img th:if="${user.image!=null}" th:src="@{${user.image}}"  alt="Profile Image" 
+                 class="profile-image">
+
+            <div class="profile-info text-start">
+                <label>Name:</label>
+                <p class="user-name" th:text="${user.name}">John Doe</p>
+            </div>
+
+            <div class="profile-info text-start">
+                <label>Gender:</label>
+                <p th:text="${user.gender}">Male</p>
+            </div>
+
+            <div class="profile-info text-start">
+                <label>Email Address:</label>
+                <p th:text="${user.email}">john.doe@example.com</p>
+            </div>
+
+            <div class="profile-info text-start">
+                <label>Mobile Number:</label>
+                <p th:text="${user.phone}">+91 9876543210</p>
+            </div>
+
+            <a th:href="@{/user/edit-profile}" class="edit-button mt-3">Edit Information</a>
+            <a th:href="@{/user/updatePassword}" class="edit-button mt-3">Change Password</a>
+        </div>
+        
+        
+        <script>
+function copyReferralLink() {
+    const input = document.getElementById('referralLink');
+    input.select();
+    input.setSelectionRange(0, 99999); // For mobile
+    document.execCommand("copy");
+}
+</script>
+       
+            	  
+</section>
+
+
+</body>
+</html>

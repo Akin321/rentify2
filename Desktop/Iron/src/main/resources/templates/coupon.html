@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html 
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{base}">
+
+<head>
+<title>Coupon</title>
+</head>
+<body>
+
+    <div layout:fragment="content" class="m-5 w-100">
+    	
+    	<h2 class="mb-4">Add Coupon</h2>
+  <form action="/admin/coupons/add" method="post" th:object="${dto}" class="p-4 border rounded shadow-sm" id="couponForm">
+  <h4 class="mb-4">Add New Coupon</h4>
+
+  <div class="mb-3">
+    <label for="code" class="form-label">Coupon Code</label>
+    <input type="text" class="form-control" id="code" name="couponCode"  th:classappend="${#fields.hasErrors('couponCode')} ? ' is-invalid' : ''"
+
+             th:field="*{couponCode}" required>
+  <div id="couponCode-error" class="invalid-feedback"></div>
+  </div>
+
+  <div class="mb-3">
+    <label for="discount" class="form-label">Discount (%)</label>
+    <input type="number" class="form-control" id="discount" name="discountPer" min="1" max="100" th:field="*{discountPer}" th:classappend="${#fields.hasErrors('discountPer')} ? 'is-invalid' :''"   required>
+      <div id="discountPer-error" class="invalid-feedback" ></div>
+    
+  </div>
+
+  <div class="mb-3">
+    <label for="minPurchaseAmount" class="form-label">Minimum Purchase Amount</label>
+    <input type="number" class="form-control" id="minPurchaseAmount" name="minAmount" min="0" th:field="*{minAmount}" th:classappend="${#fields.hasErrors('minAmount')} ? 'is-invalid' :''" required>
+          <div id="minPurchaseAmount-error" class="invalid-feedback" ></div>
+    
+  </div>
+
+  <div class="mb-3">
+    <label for="expiryDate" class="form-label">Expiry Date</label>
+    <input type="date" class="form-control" id="expiryDate" name="expiryDate" th:field="*{expiryDate}" th:classappend="${#fields.hasErrors('expiryDate')} ? 'is-invalid' :''" required>
+              <div id="expiryDate-error" class="invalid-feedback"></div>
+    
+  </div>
+
+  <div class="mb-3">
+    <label for="totalUsageLimit" class="form-label">
+        Total Usage Limit
+        <span class="text-muted" style="font-size: 0.85em;">* Leave empty or -1 for unlimited</span>
+    </label>
+    
+    <input type="text"
+           class="form-control"
+           id="totalUsageLimit"
+           name="totalUsageLimit"
+           placeholder="Leave empty or -1 for unlimited"
+           th:field="*{totalUsageLimit}"
+           th:classappend="${#fields.hasErrors('totalUsageLimit')} ? 'is-invalid' : ''"
+           min="-1" />
+
+    <div id="totalUsageLimit-error" class="invalid-feedback"></div>
+</div>
+
+
+  <div class="mb-3">
+    <label for="perUserLimit" class="form-label">Usage Limit Per User  <span class="text-muted" style="font-size: 0.85em;">* Leave empty or -1 for unlimited</span></label>
+    <input type="number" class="form-control" id="perUserLimit"
+     name="perUserLimit" placeholder="Leave empty or -1 for unlimited" th:field="*{perUserLimit}" th:classappend="${#fields.hasErrors('perUserLimit')} ? 'is-invalid' :''">
+         <div id="perUserLimit-error" class="invalid-feedback" ></div>
+     
+  </div>
+
+  <div class="mb-3">
+    <label for="description" class="form-label">Description</label>
+    <textarea class="form-control" id="description" name="description" rows="3" th:field="*{description}" th:classappend="${#fields.hasErrors('description')} ? 'is-invalid' :''"></textarea>
+      <div class="invalid-feedback" id="description-error" ></div>
+    
+  </div>
+	<div class="d-flex gap-3">
+	  <button type="submit" class="btn btn-primary">Add Coupon</button>
+	  <a href="/admin/view-coupon"><button type="button" class="btn btn-warning">Cancel</button></a>
+	
+	</div>
+</form>
+
+<script>
+document.getElementById("couponForm").addEventListener("submit",(e)=>{
+	e.preventDefault();
+	const form=document.getElementById("couponForm");
+	const formData=new FormData(form);
+	
+	fetch('/admin/validate/coupon',{
+		method:"POST",
+		body:formData
+	
+	})
+	.then((response)=>{
+		if(response.ok){
+			window.location.href="/admin/view-coupon";
+		}
+		else{
+			response.json().then((data) => {
+	            showValidationErrors(data);
+	        });
+		}
+	})
+	.catch(error=>{
+		alert("Something unexpected happened coupon cannot be added");
+	})
+})
+
+function showValidationErrors(errors) {
+    // Clear previous errors
+
+    document.querySelectorAll(".invalid-feedback").forEach(el => el.innerText = "");
+    document.querySelectorAll(".form-control").forEach(el => el.classList.remove("is-invalid"));
+
+    // Loop through error fields
+    for (let field in errors) {
+        const input = document.querySelector(`[name="${field}"]`);
+        const errorDiv = document.getElementById(`${field}-error`);
+	
+        if (input && errorDiv) {
+            input.classList.add("is-invalid");
+            errorDiv.innerText = errors[field];
+        }
+    }
+}
+
+</script>
+    
+    
+    </div>
+    
+
+</body>
+</html>

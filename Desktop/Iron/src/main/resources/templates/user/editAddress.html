@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{user/profileBase}">
+
+<head>
+    <title>Profile Info</title>
+<link rel="stylesheet" href="/css/addAddress.css">
+
+
+</head>
+
+<body>
+
+<section layout:fragment="profilecontent">
+<form th:action="@{/user/update-address}" th:object="${addressDto}" method="post" class="form-container">
+
+  <h4 class="mb-4">Edit Addresses</h4>
+  
+
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <input type="text" th:field="*{name}" class="form-control" placeholder="Name"/>
+      <div class="text-danger small" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+    </div>
+    <input type="hidden" th:field="*{id}" >
+    <div class="col-md-6">
+      <input type="text" th:field="*{phone}" class="form-control" placeholder="10-digit mobile number"/>
+      <div class="text-danger small" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></div>
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <input type="text" th:field="*{pincode}" class="form-control" placeholder="Pincode"/>
+      <div class="text-danger small" th:if="${#fields.hasErrors('pincode')}" th:errors="*{pincode}"></div>
+    </div>
+    <div class="col-md-6">
+      <input type="text" th:field="*{locality}" class="form-control" placeholder="Locality"/>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <input type="text" th:field="*{address}" class="form-control" placeholder="Address (Area and Street)"/>
+    <div class="text-danger small" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <input type="text" th:field="*{city}" class="form-control" placeholder="City/District/Town"/>
+      <div class="text-danger small" th:if="${#fields.hasErrors('city')}" th:errors="*{city}"></div>
+    </div>
+    
+    <div class="col-md-6">
+      <input type="text" th:field="*{state}" class="form-control" placeholder="State"/>
+      <div class="text-danger small" th:if="${#fields.hasErrors('state')}" th:errors="*{state}"></div>
+    </div>
+    </div>
+    
+
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <input type="text" th:field="*{landmark}" class="form-control" placeholder="Landmark (Optional)"/>
+    </div>
+  
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Address Type</label><br/>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" th:field="*{addressType}" value="HOME" id="home"/>
+      <label class="form-check-label" for="home">Home</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" th:field="*{addressType}" value="WORK" id="work"/>
+      <label class="form-check-label" for="work">Work</label>
+    </div>
+    <div class="text-danger small" th:if="${#fields.hasErrors('addressType')}" th:errors="*{addressType}"></div>
+  </div>
+
+  <div class="d-flex justify-content-start gap-2">
+    <a href="/user/view-address" class="btn btn-outline-dark">Cancel</a>
+    <button type="submit" class="btn btn-black">Save</button>
+  </div>
+</form>
+
+
+
+
+
+</section>
+
+</body>
+</html>

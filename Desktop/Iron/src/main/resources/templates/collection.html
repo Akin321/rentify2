@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html 
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{base}">
+
+<head>
+<title>Collections</title>
+</head>
+<body>
+
+    <div layout:fragment="content" class="m-5 w-100">
+    
+     <h2 class="text-center">Collections</h2>
+
+    <form th:action="@{/admin/view-collections}" method="get" class="d-flex gap-2 mb-3">
+    <input type="text" name="keyword" th:value="${param.keyword}" placeholder="Search Collections..." class="form-control" />
+    <button type="submit" class="btn btn-primary">Search</button>
+    
+    
+
+    <!-- Clear Search Button -->
+    <a th:href="@{/admin/view-collections}" class="btn btn-outline-secondary">Clear</a>
+    </form>
+    <div>
+    <a href="/admin/add-collections"><button class="btn btn-primary">Add Collection</button></a></div>
+<div class="container mt-5">
+    <div class="card shadow-lg p-4 rounded-4">
+		 <table class="table w-100">
+		  <thead>
+		    <tr>
+		      <th scope="col">Id</th>
+		      <th scope="col">Name</th>
+		      <th scope="col">CreatedAt</th>
+		       <th scope="col">Status</th>
+		        <th scope="col"></th>
+	
+		    </tr>
+		  </thead>
+		  <tbody>
+		    <tr th:each="collection,iterator:${collections}">
+		      <td  th:text="${iterator.count}"></td>
+		      <td  th:text="${collection.name}"></td>
+		      <td th:text="${collection.createdAt}">@mdo</td>
+		      <td th:if="${collection.is_active}"><a th:href="@{'/admin/disable-collections/' + ${collection.id} + '?active=' + ${!collection.is_active}}"><button type="button" class="btn btn-danger">Disable</button></a></td>
+          <td th:if="${!collection.is_active}"><a th:href="@{'/admin/disable-collections/' + ${collection.id} + '?active=' + ${!collection.is_active}}"><button type="button" class="btn btn-success">Enable</button></a></td>
+			<td>
+<a th:href="@{/admin/edit-collections/{id}(id=${collection.id})}" class="btn btn-warning">Edit</a>
+			</td>          	
+			
+		  </tbody>
+		  
+		</table>
+<div th:if="${error}" class="alert alert-danger text-center" role="alert" th:text="${error}"></div>
+
+    </div>
+    <div class="d-flex justify-content-center m-3">
+<nav aria-label="Page navigation example ">
+  <ul class="pagination" th:if="${totalPages > 1}">
+
+    <!-- Previous Button -->
+    <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+        <a class="page-link"  th:href="@{'/admin/view-collections'(page=${currentPage - 1},keyword=${keyword})}" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+        </a>
+    </li>
+
+    <!-- Page Numbers -->
+    <li class="page-item"
+        th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+        th:classappend="${i} == ${currentPage} ? 'active'">
+        <a class="page-link" th:href="@{'/admin/view-collections'(page=${i},keyword=${keyword})}" th:text="${i + 1}"></a>
+    </li>
+
+    <!-- Next Button -->
+    <li class="page-item" th:classappend="${currentPage + 1 == totalPages} ? 'disabled'">
+        <a class="page-link" th:href="@{'/admin/view-collections'(page=${currentPage + 1},keyword=${keyword})}" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+        </a>
+    </li>
+
+</ul>
+
+</nav>
+
+</div>
+</div>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    toastr.options = {
+        "closeButton": true,
+        "debug": false,
+        "newestOnTop": true,
+        "progressBar": true,
+        "positionClass": "toast-top-center",
+        "preventDuplicates": true,
+        "timeOut": "5000", // 10 seconds
+        "extendedTimeOut": "1000"
+    };
+
+    let successMessage = /*[[${successMessage}]]*/ '';
+ 	let errorMessage = '';
+
+    if (successMessage) {
+        toastr.success(successMessage);
+    }
+    if (errorMessage) {
+        toastr.error(errorMessage);
+    }
+
+ 
+</script>
+</div>
+
+</body>
+</html>

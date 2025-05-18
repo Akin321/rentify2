@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{user/profileBase}">
+
+<head>
+    <title>Profile Info</title>
+  <style>
+        .wallet-card {
+            max-width: 500px;
+            margin: auto;
+            margin-top: 60px;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        .amount-box {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .wallet-balance {
+            font-size: 1.2rem;
+        }
+
+        .checkout-btn {
+            font-size: 1.1rem;
+            padding: 12px;
+        }
+
+        .wallet-heading {
+            background: linear-gradient(to right, black, white);
+            color: black;
+            text-align: center;
+            padding: 12px;
+            font-weight: 600;
+            font-size: 1.5rem;
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+        }
+
+        .btn-cancel {
+            background-color: #e0e0e0;
+            color: #333;
+        }
+
+        .btn-cancel:hover {
+            background-color: #c7c7c7;
+        }
+    </style>
+    
+</head>
+
+<body>
+
+	<section layout:fragment="profilecontent">
+	<div class="container">
+    <div class="card wallet-card">
+        <!-- Black and white heading -->
+        <div class="wallet-heading">Wallet</div>
+
+        <div class="card-body p-4">
+
+            <!-- Wallet Balance -->
+            <div class="wallet-balance mb-4 text-center">
+                Current Wallet Balance: <span class="text-success fw-bold">$<span th:text="${wallet.balance}">0.00</span></span>
+            </div>
+
+            <!-- Amount to Add -->
+            <div class="text-center mb-3">
+                <div class="text-muted mb-1">Amount to be added:</div>
+                <div class="amount-box text-dark">$<span id="amountDisplay" th:text="${amount}">100</span></div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-grid gap-2 d-md-flex justify-content-center">
+                <button type="button" class="btn btn-success checkout-btn me-md-2" onclick="payNow()">Checkout with Razorpay</button>
+                <a href="/user/view-wallet" class="btn btn-cancel checkout-btn">Cancel</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Razorpay Script -->
+<script th:inline="javascript">
+    function payNow() {
+  
+		fetch('/user/wallet/payment',{
+			method:'GET',
+		
+			'Content-Type':'application/json'
+		})
+		.then(response=>response.json())
+		.then(orderData=>{
+		    var options = {
+		            "key": "rzp_test_OmCIXPHWUDWbjB", // ✅ Replace with your Razorpay Key
+		            "amount": orderData.amount,
+		            "currency": orderData.currency,
+		            "name": "Iron Wallet",
+		            "order_id": orderData.id,
+		            "description": "Add money to wallet",
+		            "handler": function (response) {
+		                // ✅ Backend redirect or AJAX verification
+		                verifyPayment(response);
+		                //window.location.href = "/wallet/payment-success?paymentId=" + response.razorpay_payment_id;
+		            },
+		            "theme": {
+		                "color": "#0d6efd"
+		            }
+		        }
+	        const rzp = new Razorpay(options);
+	        rzp.open();
+		}) .catch(error => {
+		    console.error("Payment error:", error);
+		    alert("Payment initiation failed.");
+		  });
+		}
+    
+
+
+    
+    
+    
+    function verifyPayment(response) {
+    	  fetch('/user/wallet/payment/verify', {
+    	    method: 'POST',
+    	    headers: {
+    	      'Content-Type': 'application/json'
+    	    },
+    	    body: JSON.stringify(response)
+    	  })
+    	  .then(res => res.json())
+    	  .then(data => {
+    	    if (data.verified) {
+    	      Swal.fire({
+    	        title: 'Success!',
+    	        text: 'Money has been successfully added to your wallet.',
+    	        icon: 'success',
+    	        confirmButtonText: 'View Wallet'
+    	      }).then(() => {
+    	        window.location.href = "/user/view-wallet";
+    	      });
+    	    } else {
+    	      Swal.fire({
+    	        title: 'Transaction Failed!',
+    	        text: 'Money was not added to your wallet.',
+    	        icon: 'error',
+    	        confirmButtonText: 'View Wallet'
+    	      }).then(() => {
+    	        window.location.href = "/user/view-wallet";
+    	      });
+    	    }
+    	  })
+    	  .catch(err => {
+    	    console.error("Verification error:", err);
+    	    Swal.fire({
+    	      title: 'Server Error!',
+    	      text: 'Something went wrong during payment verification.',
+    	      icon: 'error',
+    	      confirmButtonText: 'Try Again'
+    	    });
+    	  });
+    	}
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+	<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+	
+	
+	
+	</section>
+
+</body>
+</html>

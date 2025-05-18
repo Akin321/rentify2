@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html 
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{base}">
+
+<head>
+    <title>Orders</title>
+        <link href="/css/adminOrder.css" rel="stylesheet">
+    
+</head>
+<body>
+
+    <div layout:fragment="content" class="m-5 w-100">
+    <div class="admin-orders-container">
+  <h2>Orders Overview</h2>
+	    <form action="/admin/view-order" method="get" id="searchForm">
+  <div class="d-flex justify-content-center align-items-start gap-3 position-relative mb-3">
+     <div class="position-relative w-100">
+      <input type="text" 
+             class="form-control pe-5" 
+             name="keyword" 
+             placeholder="Search your orders..." 
+             th:value="${keyword}" 
+             id="keywordInput" />
+
+      <!-- ❌ Clear button inside input -->
+      <button type="button" 
+              class="btn position-absolute top-50 translate-middle-y end-0 me-2 py-0 px-2 border"
+              onclick="clearSearch()" 
+              id="clearBtn" 
+              style="z-index: 10; font-size: 1rem;" 
+              hidden>
+        &times;
+      </button>
+    </div>
+
+
+    <button type="submit" class="btn btn-primary">Search</button>
+  </div>
+</form>
+  <!-- Order 1 -->
+  <div class="order-card" th:each="order:${orders}">
+    <div class="order-header">
+      <div><strong>Order ID:</strong><span th:text="${order.orderId}"></span> </div>
+      <div><strong>Customer:</strong><span th:text="${order.user.email}">Aarya Jain (aarya@mail.com)</span></div>
+      <div><strong>Date:</strong><span th:text="${order.orderDate}"> May 07, 2025</span></div>
+      <div><strong>Total:</strong><span th:text="'$'+${order.totalAmount}"></span></div>
+      <div><strong>Payment Type:</strong><span th:text="${order.paymentType}">Online (Razorpay)</span> </div>
+    </div>
+    
+
+    <div class="order-coupon d-flex justify-content-start align-tems-start mb-3">
+    <div class="address-box text-wrap" style="max-width: 300px;">
+    <strong>Address:</strong><span th:text="${order.address}"></span>
+    </div>
+
+    	<div th:if="${order.couponAmount>0}">
+    	   <strong>Coupon:</strong><span th:text="${order.couponCode}"></span> <br>
+      <strong>Discount:</strong> <span th:text="'$'+${order.couponAmount}"></span>
+    	</div>
+   
+    </div>
+
+    <div class="order-items">
+      <table>
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Variant</th>
+            <th>Qty</th>
+            <th>Price</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Normal product -->
+          <div th:each="orderItem:${order.orderItems}">
+			<tr th:if="${orderItem.orderStatus.name() != 'Cancelled' and orderItem.orderStatus.name() != 'Returned'}">
+            <td th:text="${orderItem.productName}">Leather Handbag</td>
+            <td><span th:text="${orderItem.color}">Black</span> / <span th:text="${orderItem.size}">Medium</span></td>
+            <td th:text="${orderItem.quantity}">1</td>
+            <td th:text="'$'+${orderItem.totalAmount}">₹1,500</td>
+			<td th:id="'status-' +${orderItem.id}" th:text="${orderItem.orderStatus}">DELIVERED</td>
+            <td>
+            <form class="update-status-form" th:attr="data-orderitemid=${orderItem.id}, data-orderid=${order.id}">
+                <select name="status" th:disabled="${orderItem.orderStatus.name()=='Delivered'}">
+                <option th:value="OrderPlaced" th:selected="${orderItem.orderStatus.name()=='OrderPlaced'}">PLACED</option>
+                <option th:value="Shipped" th:selected="${orderItem.orderStatus.name()=='Shipped'}">SHIPPED</option>
+                <option th:value="OutForDelivery" th:selected="${orderItem.orderStatus.name()=='OutForDelivery'}">OUT_FOR_DELIVERY</option>
+                <option th:value="Delivered" th:selected="${orderItem.orderStatus.name()=='Delivered'}">DELIVERED</option>
+              </select>
+              <button type="submit" class="btn btn-outline-primary m-0">Update</button>
+              </form>
+            </td>
+          </tr>
+
+          <!-- Cancelled product -->
+          <tr th:if="${orderItem.orderStatus.name()=='Cancelled'}" style="background-color: #ffecec;">
+            <td th:text="${orderItem.productName}">Leather Handbag</td>
+            <td><span th:text="${orderItem.color}">Black</span> / <span th:text="${orderItem.size}">Medium</span></td>
+            <td th:text="${orderItem.quantity}">1</td>
+            <td th:text="'$'+${orderItem.totalAmount}">₹1,500</td>
+            <td style="color: red;"><strong>CANCELLED</strong></td>
+            <td>
+              <span style="color: gray;">N/A</span>
+            </td>
+          </tr>
+
+          <!-- Returned product -->
+          <tr th:if="${orderItem.orderStatus.name()=='Returned'}" style="background-color: #f0f8ff;">
+          <td th:text="${orderItem.productName}">Leather Handbag</td>
+            <td><span th:text="${orderItem.color}">Black</span> / <span th:text="${orderItem.size}">Medium</span></td>
+            <td th:text="${orderItem.quantity}">1</td>
+            <td th:text="'$'+${orderItem.totalAmount}">₹1,500</td>
+            <td style="color: blue;"><strong>RETURNED</strong></td>
+            <td>
+              <span style="color: gray;">N/A</span>
+            </td>
+          </tr>
+          </div>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+	<nav aria-label="Page navigation example" class="d-flex justify-content-center align-items-center">
+  <ul class="pagination" th:if="${totalPages > 1}">
+
+    <!-- Previous Button -->
+    <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+        <a class="page-link" th:href="@{'/admin/view-order'(page=${currentPage - 1},keyword=${keyword})}" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+        </a>
+    </li>
+
+    <!-- Page Numbers -->
+    <li class="page-item"
+        th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+        th:classappend="${i} == ${currentPage} ? 'active'">
+        <a class="page-link" th:href="@{'/admin/view-order'(page=${i},keyword=${keyword})}" th:text="${i + 1}"></a>
+    </li>
+
+    <!-- Next Button -->
+    <li class="page-item" th:classappend="${currentPage + 1 == totalPages} ? 'disabled'">
+        <a class="page-link" th:href="@{'/admin/view-order'(page=${currentPage + 1},keyword=${keyword})}" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+        </a>
+    </li>
+
+</ul>
+
+</nav>
+
+    
+    
+    <script>
+  const input = document.getElementById('keywordInput');
+  const clearBtn = document.getElementById('clearBtn');
+
+  // Show or hide the clear button based on input value
+  input.addEventListener('input', () => {
+    clearBtn.hidden = input.value.trim() === '';
+  });
+
+  function clearSearch() {
+    input.value = '';
+    document.getElementById('searchForm').submit();
+  }
+
+  // Show the button on page load if keyword exists
+  window.addEventListener('DOMContentLoaded', () => {
+    clearBtn.hidden = input.value.trim() === '';
+  });
+  
+  document.querySelectorAll('.update-status-form').forEach(form => {
+	  form.addEventListener('submit', async function (e) {
+	    e.preventDefault();
+	    const formData = new FormData(form);
+	    const orderItemId = form.getAttribute('data-orderitemid');
+	    const status = formData.get('status');
+	    const orderId=form.getAttribute('data-orderid');
+
+	    const response = await fetch('/admin/update-orderStatus', {
+	      method: 'POST',
+	      headers: {
+	        'Content-Type': 'application/json',
+	      },
+	      body: JSON.stringify({
+	        orderItemId: orderItemId,
+	        status: status
+	      })
+	    });
+
+		    if (response.ok) {
+		      // update status text in <td>
+		      const data = await response.json();
+				  const updatedId = data.orderItemId;
+				  const updatedStatus = data.status;
+				
+				  const td = document.getElementById(`status-${orderItemId}`);
+				  console.log(td);
+				  if (td) {
+				    td.textContent = updatedStatus.toUpperCase();
+				  }
+		      alert("Order status updated!");
+		    } else {
+		    	const errorMessage = await response.text(); // read the plain text body
+		        alert("Error: " + errorMessage);
+	    }
+	  });
+	});
+</script>
+    
+    </div>
+
+</body>
+</html>

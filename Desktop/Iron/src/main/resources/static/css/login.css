@@ -1,0 +1,46 @@
+
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: sans-serif;
+  }
+
+
+
+  input {
+    width: 100%;
+    padding: 1rem;
+    margin: 1rem 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+
+  button {
+
+    background-color: #000000;
+    padding: 1rem;
+    width:100%;
+    color: white;
+    border: none;
+    border-radius: 5px;
+  }
+  
+
+  form h2{
+    text-transform: uppercase;
+    font-weight: bold;
+    text-align: center;
+  }
+  
+    .error-tooltip {
+    color: red;
+    font-size: 12px;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    white-space: nowrap;
+    margin-top: 2px;
+  }

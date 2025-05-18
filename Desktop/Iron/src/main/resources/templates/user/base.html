@@ -1,0 +1,158 @@
+	<!DOCTYPE html>
+	<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" class="h-100">
+	<head>
+	<meta charset="UTF-8">
+	<title>Iron</title>
+	    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Font Awesome (for icons) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+	    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+		<script src="https://kit.fontawesome.com/c386a9710a.js" crossorigin="anonymous"></script>
+		<link rel="stylesheet" href="/css/userBase.css">
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+		
+<!-- jQuery (required by Toastr) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<!-- Toastr CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+
+<!-- Toastr JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+
+	</head>
+	<body class="d-flex flex-column h-100" th:attr="data-success-message=${successMessage}, data-error-message=${errorMessage}">
+		<div class="flex-grow-1">
+			<header>
+				<nav class="navbar navbar-expand-lg bg-white mb-0 shadow-sm py-3">
+			  <div class="container-fluid align-items-center mx-3">
+			    
+			    <!-- Brand Logo -->
+			    <a class="navbar-brand me-4" href="/user/home">
+			      <img src="/images/logo.png" alt="Logo" height="40">
+			    </a>
+			
+			    <!-- Toggler -->
+			    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+			      data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+			      aria-label="Toggle navigation">
+			      <span class="navbar-toggler-icon"></span>
+			    </button>
+			
+			         
+          <!-- Nav Links -->
+          <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+            <ul class="navbar-nav gap-5">
+              
+              <!-- MEN Dropdown -->
+              <li class="nav-item dropdown">
+				  <a class="nav-link dropdown-toggle fw-bold fs-5" href="#" id="menDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+				    Men
+				  </a>
+				  <div class="dropdown-menu" aria-labelledby="menDropdown" id="menCategoryDropdown">
+				    <div class="d-flex justify-content-center gap-4">
+				    <!-- First Category -->
+				    <div>
+				      <a class="dropdown-item fw-semibold" href="#">Trending</a>
+				      <a class="dropdown-item fw-semibold" href="#">New Arrivals</a>
+				    </div>
+				
+				    <!-- Second Category -->
+				    <div id="menPrdDropdown">
+				      <a class="dropdown-item fw-semibold" href="#">Products</a>
+						<a class="dropdown-item" th:href="@{/user/view-products(gender=${'Male'})}">All Products</a>
+				    </div>
+				  </div>
+				  </div>
+				</li>
+          
+              <!-- WOMEN Dropdown -->
+                  <li class="nav-item dropdown">
+				  <a class="nav-link dropdown-toggle fw-bold fs-5" href="#" id="womenDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+				    Women
+				  </a>
+				  <div class="dropdown-menu" aria-labelledby="womenDropdown" id="womenCategoryDropdown">
+				    <div class="d-flex justify-content-center gap-4">
+				    <!-- First Category -->
+				    <div>
+				      <a class="dropdown-item fw-semibold" href="#">Trending</a>
+				      <a class="dropdown-item fw-semibold" href="#">New Arrivals</a>
+				    </div>
+				
+				    <!-- Second Category -->
+				    <div id="womenPrdDropdown">
+				      <a class="dropdown-item fw-semibold" >Products</a>
+					<a class="dropdown-item" th:href="@{/user/view-products(gender=${'Female'})}">All Products</a>
+				    </div>
+				 
+				  </div>
+				  </div>
+				</li>
+          
+            </ul>
+          </div>   
+			
+			    <!-- Search Bar -->
+			   <form class="d-flex mx-3" th:action="@{/user/view-products/search}" method="get" role="search">
+				    <input class="form-control me-2" type="search" name="keyword" placeholder="Search" aria-label="Search" id="keyword">
+				    
+				    <!-- Initially disabled, will be enabled when the user types -->
+				    <button class="btn btn-outline-success" type="submit" id="submitButton" disabled>Search</button>
+				</form>
+							
+			    <!-- Icons -->
+			    <div class="d-flex gap-4 fs-4">
+			      <a href="/user/view-wishlist"><i class="fa-regular fa-heart text-black"></i> </a>
+							<div class="dropdown">
+				    <a href="#" class="btn dropdown-toggle p-0 border-0 bg-transparent" 
+				       role="button" 
+				       id="userDropdown" 
+				       data-bs-toggle="dropdown" 
+				       aria-expanded="false">
+				        <i class="fa-solid fa-user-tie text-dark fs-4"></i>
+				    </a>
+				
+				    <ul class="dropdown-menu dropdown-menu-end " style="width:100px" aria-labelledby="userDropdown">
+				        <li><a class="dropdown-item" href="/user/view-order">My Orders</a></li>
+				        <li><a class="dropdown-item" href="/user/view-profile">Profile</a></li>
+				        <li><a class="dropdown-item" href="/user/view-address">Address</a></li>
+				        <li><a class="dropdown-item" href="/user/view-wallet">Wallet</a></li>
+				        <li><a class="dropdown-item" href="/user/refer">Refer and Earn</a></li>
+				        <li><hr class="dropdown-divider"></li>
+				        <li><a class="dropdown-item text-danger" href="/logout">Logout</a></li>
+				    </ul>
+				</div>
+
+			      <a href="/view-cart"><i class="fa-solid fa-bag-shopping text-dark"></i></a>
+ </a>
+			      
+			     
+			    </div>
+			  </div>
+			</nav>
+			
+			</header>
+		
+  
+					
+			
+					<div layout:fragment="usercontent" class="flex-grow-1 p-3">
+					
+					</div>
+					
+					
+			</div>
+	
+	<footer class="d-flex justify-content-center align-items-center border-top py-3 text-center">
+		<p>© 2025 | Iron Limited | All Rights Reserved. | We Do Gym.</p>
+	</footer>
+			
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.min.js" integrity="sha384-VQqxDN0EQCkWoxt/0vsQvZswzTHUVOImccYmSyhJTp7kGtPed0Qcx8rK9h9YEgx+" crossorigin="anonymous"></script>
+		<script src="/js/base.js"></script>
+	</body>
+	</html>

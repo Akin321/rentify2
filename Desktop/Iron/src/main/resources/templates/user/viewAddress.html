@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{user/profileBase}">
+
+<head>
+    <title>Profile Info</title>
+<link rel="stylesheet" href="/css/viewAddress.css">
+
+</head>
+
+<body>
+
+<section layout:fragment="profilecontent">
+
+<div class="container">
+    <div class="address-container">
+        <h4 class="mb-4">Manage Addresses</h4>
+
+        <div class="mb-4">
+        <a href="/user/add-address">
+          <button class="btn btn-outline-primary">
+                <i class="fa-solid fa-plus"></i> Add a New Address
+            </button>
+          </a>
+        </div>
+        
+
+          
+
+        <!-- Address Card -->
+        <div class="card mb-3 p-3" th:each="address:${addresses}">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <div class="tag" th:text="${address.addressType}">WORK</div>
+                    <div class="d-flex gap-3">
+                          <h6 class="fw-bold mb-1" th:text="${address.name}">Akin Jilson </h6><span class="fw-normal ms-3" th:text="${address.phone}">8547515076</span>
+                    
+                    </div>
+        <p class="mb-0 address-desc" th:text="${address.address + ', ' + address.locality + ', ' + address.city + ', ' + address.state + ' - ' + address.pincode}">
+    Don Bosco Tech iti, Vaduthala, Kochi, Kerala - 682023
+</p>
+
+                </div>
+                <div class="dropdown">
+                    <button class="btn btn-link text-dark" type="button" data-bs-toggle="dropdown">
+                         <i class="fa-solid fa-ellipsis-vertical"></i>
+                    </button>
+                    <ul class="dropdown-menu  dropdown-menu-end fit-content">
+                        <li><a class="dropdown-item" th:href="@{/user/edit-address/{id} (id=${address.id})}">Edit</a></li>
+						<li>
+						  <a class="dropdown-item" 
+						     th:href="@{'/user/delete-address/' + ${address.id}}"
+						     onclick="return confirm('Are you sure you want to delete this address?');">
+						    Delete
+						  </a>
+						</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Another Address Card -->
+  
+    </div>
+</div>
+
+<!-- Bootstrap JS and Icons -->
+
+
+</section>
+</body>
+</html>

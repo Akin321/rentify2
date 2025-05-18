@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html 
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{user/base}">
+
+<head>
+    <title>Home</title>
+    <link rel="stylesheet" th:href="@{/css/userHome.css}">
+</head>
+
+<body>
+	 <div layout:fragment="usercontent" class="px-0">
+	<!-- Banner Section -->
+	<div class="container-fluid px-0">
+	  <div class="position-relative">
+	    <img src="https://cdn.shopify.com/s/files/1/0817/7988/4088/articles/ENUwmzZNlh2QcH0QKRtJR_7db3d8fa-7518-478c-b969-afd01ba102df.png?v=1719388438" class="img-fluid w-100" alt="Banner Image" style="max-height: 500px; object-fit: cover;">
+	
+	    <!-- Overlay Text -->
+	    <div class="position-absolute top-50 start-50 translate-middle text-center text-white">
+	      <h1 class="display-4 fw-bold">Welcome to Our Store</h1>
+	      <p class="fs-5">Shop the latest trends now</p>
+	      <div class="d-flex justify-content-center gap-3 mt-3">
+	        <a href="/user/view-products?gender=Female" class="btn btn-light px-4 py-2 fw-semibold">Shop Women</a>
+	        <a href="/user/view-products?gender=Male" class="btn btn-outline-light px-4 py-2 fw-semibold">Shop Men</a>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+			
+	<div class="container my-5">
+	<div class="mb-5">
+		<h2 class="mb-4">Explore By Category</h2>
+	  
+		<!-- Buttons -->
+		<div class="mb-3">
+		  <a th:href="@{/user/home (gender='Female')}" class="btn btn-dark px-3 py-1 fw-semibold">Women</a>
+		  <a th:href="@{/user/home (gender='Male')}" class="btn btn-outline-dark px-3 py-1 fw-semibold">Men</a>
+		</div>
+	  
+		<!-- Scrollable Cards -->
+		<div class="category-scroll-container">
+		  <button class="scroll-btn scroll-left" onclick="scrollCategories(-200)">&#8249;</button>
+		  <div class="category-card-container" id="categoryContainer">
+			<div class="category-card" th:each="category : ${categories}">
+			  <a th:href="@{/user/view-products/{gender}/{id}(gender=${category.gender}, id=${category.id})}"><img th:src="@{${category.image}}" alt="Category"></a>
+			  <p class="fw-semibold mt-2 mb-2" th:text="${category.name}"></p>
+			</div>
+		  </div>
+		  <button class="scroll-btn scroll-right" onclick="scrollCategories(200)">&#8250;</button>
+		</div>
+		
+		</div>
+		<div>
+		<h2 class="mb-4">New Arrivals</h2>
+			<a href="#" class="d-block text-end fw-semibold text-black text-decoration-none mb-2">View More →</a>
+
+		 
+	
+		 <div class="category-card-container cont2" id="productContainer">
+    <div class="category-card card2" th:each="product : ${products}">
+        <div th:each="img : ${product.images}">
+            <img th:if="${img.is_main}" th:src="@{${img.image}}" alt="Product" class="img-fluid" />
+        </div>
+
+        <p class="fw-semibold mt-2 mb-2" th:text="${product.name}"></p>
+        <p class="fw-normal mt-2 mb-2" th:text="${product.fit}"></p>
+        <p class="fw-normal mt-2 mb-2" th:text="${product.color}"></p>
+
+        <div th:if="${product.finalPrice lt product.basePrice}">
+            <p class="fw-semibold mb-1" th:text="'$' + ${product.finalPrice}"></p>
+            <span class="text-success small fw-semibold" th:text="${product.discountPer} + '% OFF'"></span>
+        </div>
+
+        <div th:unless="${product.finalPrice lt product.basePrice}">
+            <p class="fw-semibold mb-1" th:text="'$' + ${product.basePrice}"></p>
+        </div>
+    </div>
+</div>
+
+
+		</div>
+
+		
+	  </div>
+	<script>
+  function scrollCategories(distance) {
+    const container = document.getElementById('categoryContainer');
+    container.scrollBy({ left: distance, behavior: 'smooth' });
+  }
+</script>
+</div>
+</body>
+</html>

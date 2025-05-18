@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html 
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{base}">
+
+<head>
+<title>Return Request</title>
+<style>
+.return-orders {
+    min-height: 70vh;
+}
+
+</style>
+</head>
+<body>
+
+    <div layout:fragment="content" class="m-5 w-100">
+    <h3>Pending Return Requests</h3>
+<div class="return-orders">
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>OrderId</th>
+      <th>Product</th>
+      <th>User</th>
+      <th>Reason</th>
+      <th>Date Requested</th>
+      <th>Status</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr th:each="req,iter : ${requests}">
+      <td th:text="${req.orderItem.order.orderId}">#1001</td>
+      <td th:text="${req.orderItem.productName}">Product</td>
+      <td th:text="${req.orderItem.order.user.email}">user@example.com</td>
+      <td th:text="${req.reason}">Not fitting well</td>
+      <td th:text="${req.requestDate}">10 May 2025</td>
+<td th:class="'text-warning'" th:if="${req.status.name() == 'Pending'}" th:text="${req.status}"></td>
+<td th:class="'text-success'" th:if="${req.status.name() == 'Approved'}" th:text="${req.status}"></td>
+<td th:class="'text-danger'" th:if="${req.status.name() == 'Rejected'}" th:text="${req.status}"></td>
+
+            
+      <td th:if="${req.status.name()=='Pending'}">
+  
+          <button class="btn btn-success btn-sm"  th:attr="data-returnId=${req.id}" onclick="approve(this)">Approve</button>
+
+          <button class="btn btn-danger btn-sm"  th:attr="data-returnId=${req.id}" onclick="reject(this)">Reject</button>
+      </td>
+      <td th:unless="${req.status.name() == 'Pending'}"></td>
+      
+    </tr>
+  </tbody>
+</table>
+</div>
+
+	
+	
+	<div class="d-flex justify-content-center">
+<nav aria-label="Page navigation example ">
+  <ul class="pagination" th:if="${totalPages > 1}">
+
+    <!-- Previous Button -->
+    <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+        <a class="page-link" th:href="@{'/return/request'(page=${currentPage - 1})}" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+        </a>
+    </li>
+
+    <!-- Page Numbers -->
+    <li class="page-item"
+        th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+        th:classappend="${i} == ${currentPage} ? 'active'">
+        <a class="page-link" th:href="@{'/return/request'(page=${i})}" th:text="${i + 1}"></a>
+    </li>
+
+    <!-- Next Button -->
+    <li class="page-item" th:classappend="${currentPage + 1 == totalPages} ? 'disabled'">
+        <a class="page-link" th:href="@{'/return/request'(page=${currentPage + 1})}" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+        </a>
+    </li>
+
+</ul>
+
+</nav>
+
+</div>
+    <script src="/js/return.js"></script>
+    </div>
+
+</body>
+</html>
